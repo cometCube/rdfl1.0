@@ -1,0 +1,44 @@
+<?php
+/*
+* @author : Leena,Vijay
+* @desc : View For Deleting Test From Test module
+* @created on : 30-06-2014
+* ---------------------------------------------
+* @modified on :
+*
+*
+*
+*/
+$title = 'Delete Test Link';
+$this->headTitle ( $title );
+?>
+<div class="modal-dialog">
+	<div class="modal-content">
+		<div class="modal-header">
+			<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+			<h4 class="modal-title" id="myModalLabel"><?php echo $title;?></h4>
+		</div>
+		<div id="modal-body" class="modal-body">
+		    <Span id="lblName">Are you sure want to delete Test?</Span>
+			<input type="text" class="form-control margin-left50" 
+				   value="<?php echo $this->escapeHtml($link->name);?>" disabled="disabled" name="txtCategoryDel"/>
+		<?php
+			$url = $this->url ( 'test', array (
+								'action' => 'deleteTestLink',
+								'id' => $this->id 
+							   ) );
+		?>
+		<form action="<?php echo $url; ?>" method="post">
+		<div>
+			<input type="hidden" name="id" value="<?php echo (int) $link->id; ?>" />
+			<input type="submit" name="del" value="Confirm" class="btn btn-primary margin-top20 margin-left50" />
+			<!-- <input type="submit" name="del" value="No" class="btn btn-primary margin-top20 " /> -->
+		</div>
+		</form>
+		</div>
+		<!-- <div class="modal-footer">
+		
+		</div> -->
+	</div>
+</div>
+

@@ -1,0 +1,390 @@
+#successbody{
+height:120px;
+}
+.background-backdrop{
+  display: none;
+}
+
+.question_list
+{
+margin-left: 1px;
+margin-right: 1px;
+padding-bottom: 1em;
+}
+#wrong_ans_img
+{
+height: 18px;
+width: 18px;
+}
+.deleteQuestion,.editQuestion
+{
+margin-top: -9px;
+}
+#addQuestions
+{
+width:200px;
+margin-left: 148px;
+}
+
+
+#d-table-menu
+{
+ height: 41px;
+}
+.hide_show
+{
+height: 50px;
+display: none;
+}
+#backToQuestion
+{
+margin-right: 150px;
+}
+
+#cat_id,#question_type
+{
+margin-top:0px;
+}
+#question_type
+{
+margin-left:15px;
+}
+#example
+{
+margin-top: 60px;
+}
+#listQuestions
+{
+margin-top:20px;
+}
+#listQuestions_category
+{
+ margin-top:-4px;
+}
+#addQuestion{
+
+background-color:#3473A9;
+   height: 28px;
+color:white;
+  margin-left:375px;
+   width: 134px
+}
+#csv_import_err
+{
+	color: rgb(255, 0, 0);
+   float: left;
+   height: 20px;
+   margin-left: 148px;
+   margin-top: -58px;
+   width: 250px;
+	
+}
+#question_type_err
+{
+
+   color: rgb(255, 0, 0);
+   float: left;
+   height: 20px;
+   margin-left: 265px;
+   margin-top: -26px;
+   width: 250px;
+}
+#mulDeleteQuestion
+{
+margin-bottom: -28px;
+   margin-left: 13px
+}
+#description_err
+{
+ 
+   color: rgb(255, 0, 0);
+   float: left;
+   height: 20px;
+   margin-left: 290px;
+   margin-top: -25px;
+   width: 250px;
+}
+#category_err
+{
+ 
+   color: rgb(255, 0, 0);
+   float: left;
+   height: 20px;
+   margin-left: 290px;
+   margin-top: -25px;
+   width: 250px;
+}
+#submit_div
+{
+
+  width :700px;
+  height: 50px;
+}
+#submit_btn_div
+{
+  float:left;
+  width: 150px;
+  margin-left:50px;
+}
+#option_select_err
+{
+   color: rgb(255, 0, 0);
+   float: left;
+   height: 20px;
+   margin-left: 380px;
+   margin-top: -26px;
+   width: 250px;
+   
+
+}
+
+#option_select_err_addoption_edit
+{
+	color: rgb(255, 0, 0);
+   float: left;
+   height: 20px;
+   margin-left: 425px;
+   margin-top: -80px;
+   width: 270px
+}
+#option_select_err_addoption
+{
+	color: rgb(255, 0, 0);
+   float: left;
+   height: 20px;
+   margin-left: 380px;
+   margin-top: -26px;
+   width: 250px;
+}
+#T_F_option_select_err
+{
+   color: rgb(255, 0, 0);
+   float: left;
+   height: 20px;
+   margin-left: 425px;
+   margin-top: -80px;
+   width: 250px
+}
+#add_more_div
+{
+  float:left;
+  width: 150px;
+}
+#points_err
+{
+ 
+   color: rgb(255, 0, 0);
+   float: left;
+   height: 20px;
+   margin-left: 265px;
+   margin-top: -26px;
+
+   width: 300px;
+
+}
+
+#points_err1
+{
+ 
+   color: rgb(255, 0, 0);
+   float: left;
+   height: 20px;
+   margin-left: 265px;
+   margin-top: -26px;
+   width: 250px;
+}
+
+
+
+.editQuestion
+{
+background-image:url(../img/edit.png);
+background-repeat:no-repeat;
+width:23px;
+height:23px;
+display: inline-block;
+padding-left: 2px;
+padding-right: 2px;
+}
+.question-header{
+  margin-left: 50px;
+  width: 759px;
+}
+#category_err
+{
+    color: rgb(255, 0, 0);
+  float: left;
+   height: 20px;
+  margin-left: 555px;
+    margin-top: -26px;
+   width: 250px;
+}
+
+#type
+{
+  margin-left: 20px;
+}
+.mark_correct_opt
+{
+height: 10px;
+   margin-left: 20px;
+   margin-top: 10px;
+   width: 150px;
+}
+#description_id
+{
+         font-family: OpenSans;
+           font-size: 14px;
+           height: 120px;
+           padding: 10px;
+           resize: none;
+           width:600px;
+margin-bottom:20px;
+}
+.question_option_div{
+margin-left: 75px;
+resize:none;
+}
+#point
+{
+       height: 22px;
+   margin-left: 4px;
+   text-align: center;
+   width: 40px;
+}
+#addQuestion
+{
+   background-color: #3473A9;
+  margin-top:-29px;
+float:right;
+width:150px;
+}
+#questionHeading
+{
+height:60px;
+width:600px;
+margin-left:50px;
+
+}
+#questionCategorySelect
+{
+float:left;
+width:150px;
+}
+
+
+#questionTypeSelect
+{
+float:left;
+width:150px;
+}
+
+#questionMultipleDelete
+{
+float:left;
+width:150px;
+}
+
+#submitbutton{
+   margin-left:20px;
+}
+
+.markopt{
+   font-size: 14px;
+}
+
+#editquestionarea
+{
+ 
+ min-height: 500px;
+ width: 800px;
+ margin-left: 50px;
+ background-color: #F1F1F1;
+}
+
+.textarea
+{
+ min-height: 30px;
+ width: 791px;
+ margin-left: 50px;
+}
+#cat_id{
+ margin-right:10px;
+ margin-top: -20px;
+}
+#question_type
+{
+ margin-left:10px;
+ margin-top: -20px;
+ margin-right: 10px;
+}
+.classDescription
+{
+ margin-left: 5px;
+}
+#importQuestion{
+      height: 106px;
+    margin-left: 20px;
+    padding: 11px 40px 10px;
+}
+#back_to_question_from_import
+{
+ margin-right: 120px;
+margin-top: -20px;
+
+}
+#back_to_question
+{
+  margin-right: 116px;
+}
+#appendOptions{
+  margin-bottom: 10px;
+}
+#csv_upload_field
+{
+ margin-bottom: 20px;
+ margin-top: -20px;
+}
+#btnAddMore
+{
+ margin-left: 30px;
+ margin-right: 10px;
+}
+#edit_fieldset
+{
+ margin-right: 110px;
+ margin-left: 0px;
+}
+#edit_back_to_question
+{
+  margin-left: 600px;
+}
+
+#mulDeleteQuestion
+{
+
+background-image:url(../img/delete.png);
+background-repeat:no-repeat;
+width:23px;
+height:23px;
+display: inline-block;
+padding-left: 2px;
+padding-right: 2px;
+}
+
+.label_div
+{
+ margin-left: 50px;
+}
+
+.correct_option_color
+{
+ color: blue;
+}
+
+
+#mulDeleteQuestion
+{
+margin-bottom: -28px;
+   margin-left: 13px
+}

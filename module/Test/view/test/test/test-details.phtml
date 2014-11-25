@@ -1,0 +1,55 @@
+<?php
+/*
+* @author : Leena,Vijay
+* @desc : View For Test Details Of Test module
+* @created on : 30-06-2014
+* ---------------------------------------------
+* @modified on :
+*
+*
+*
+*/
+$title = 'Test Details';
+$this->headTitle ( $title );
+
+?>
+<!-- Modal -->
+<div class="modal-dialog">
+	<div class="modal-content">
+		<div class="modal-header">
+			<button type="button" class="close" data-dismiss="modal"
+				aria-hidden="true">&times;</button>
+			<h4 class="modal-title" id="myModalLabel"><?php echo $title; ?></h4>
+		</div>
+		<div class="modal-body">
+			<div id="divblock">
+			<table>
+			<tr>
+			<?php echo("ID : ".$testDetails->id);echo("</br>");?>
+			</tr>
+			<tr>
+			<?php echo("Name : ".$testDetails->name);echo("</br>");?>
+			</tr>
+			<tr>
+			<?php echo("Description : ".$testDetails->description);echo("</br>");?>
+			</tr>
+			<tr>
+			<?php echo("Created By : ".$testDetails->created_by);echo("</br>");?>
+			</tr>
+			<tr>
+			<?php echo("Created On : ".$testDetails->created_on);echo("</br>");?>
+			</tr>
+			<tr>
+			<?php echo("Updated By : ".$testDetails->updated_by);echo("</br>");?>
+			</tr>
+			<tr>
+			<?php echo("Updated On : ".$testDetails->updated_on);echo("</br>");?>
+			</tr>
+            </table>
+		    </div>
+		</div>
+		<div class="modal-footer">
+			<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+		</div>
+	</div>
+</div>

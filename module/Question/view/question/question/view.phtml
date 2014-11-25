@@ -1,0 +1,53 @@
+<div id="divCreate">
+<a href="question/edit/<?php
+echo $question->id;
+?>">
+<div id="19" class="edit-btn float-right editQuestion"></div></a></div>
+  <?php
+$removeCharacter = array(
+    '\r\n',
+    '\\'
+);
+?>
+
+  <p class="lblQuestion">Q. <?php
+echo $question->description;
+?></p>
+
+  <?php
+?>
+ <ol class="lblQuestionOpt">
+    <?php
+$letter = '1';
+foreach ($answer as $k => $v) {
+    echo "<li";
+    if ($v->correct == 1) {
+        echo " class='blue'>";
+    } else
+        echo ">";
+    //echo $letter . ". ";
+    echo str_replace($removeCharacter, "", htmlspecialchars(stripslashes($v->question_option), ENT_QUOTES, 'UTF-8')) . "</li>";
+    $letter++;
+}
+?>
+
+  </ol>
+  <p></p>
+  <div id="errCat"></div>
+  <input type="button" aria-hidden="true" data-dismiss="modal" value="Close" class="btn margin-left50 margin-top10" id="btnAddCategory"/>
+  <p></p>
+
+</div>
+<script type="text/javascript">
+  $('#eTip').tooltip();
+</script>
+<?php
+ini_set("display_erros", "1");
+$title = 'View Question';
+$this->headtitle($title);
+
+$question = $this->question;
+$answer   = $this->answer;
+
+
+$id = $this->id;

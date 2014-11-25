@@ -1,0 +1,62 @@
+<?php
+use Zend\Session\Container;
+$quizSession = new Container('quiz');
+
+
+
+
+$arrData = $quizSession->testDetails[0][0];
+$arrData['time'] *= 60;
+
+
+$testName = "Test Name";
+$time = "20 Minutes";
+$passMarks ="50";
+ if(isset($arrData) && !empty($arrData)) {
+    $instructions = explode(',', $arrData['custom_instruction']);
+    $testName = $arrData['testName'];
+    $time = $arrData['time'];
+    if($time >3600) {
+      $hr = intval($time/3600);
+      $min = $time%3600;
+      $min = intval($min/60);
+      $time = $hr." Hours ".$min;
+    } else {
+       $time = intval($time/60);
+    }
+    $time .= " Minutes";
+    $passMarks = $arrData['passMarks'];
+
+ } 
+ //\Zend\Debug\Debug::dump($time);
+?>
+  <div id="content">
+
+   <div id="main-container">
+       <div class="row-mid margin0auto">
+   		 <h2><span class="black">Test:</span> <?php echo $testName; ?></h2>
+      
+   		<fieldset class="fieldbox"><legend class="legendtext">Instructions</legend>
+   			<ul class="instructions">
+          <h3>This test</h3>
+          <?php foreach($instructions as $instruction){ ?>
+          <li><?php echo $instruction ?></li>
+          <?php } ?>
+   				<li>has a limit of <?php  echo $time; ?></li>
+   				<li>has a passing mark of <?php  echo $passMarks; ?>%</li>
+   			</ul>
+   			<br><br>
+   			<a href="/student/quizStart" class="btn fontapply float-right"> start test</a>
+   		</fieldset> <!-- end of fieldset -->
+    
+   </div> <!-- end of main container -->
+  
+  </div> <!-- end of content -->
+
+ </div> <!-- end of wrapper -->
+<script type="text/javascript">
+$("a[class='studentName']").html('<?php echo $quizSession->testDetails[1]['fname']." ". $quizSession->testDetails[1]['lname']; ?>');
+</script>
+
+</body>
+</html>

@@ -1,0 +1,21 @@
+<?php 
+$fileName = getcwd () . '/public/csvuploads/question1111.csv';
+ 
+header("Cache-Control: must-revalidate, post-check=0, pre-check=0");
+header('Content-Description: File Transfer');
+header("Content-type: text/csv");
+header("Content-Disposition: attachment; filename={$fileName}");
+header("Expires: 0");
+header("Pragma: public");
+ 
+$output = fopen("php://output", "w");
+for ($i=0;$i<12;$i++) {
+	$mcsArr[]= $i+1;
+}
+fputcsv($output,$mcsArr,"\n");
+
+// Close the file
+fclose($output);
+// Make sure nothing else is sent, our file is done
+exit;
+?>

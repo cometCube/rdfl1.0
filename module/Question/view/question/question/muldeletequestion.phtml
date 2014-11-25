@@ -1,0 +1,17 @@
+<?php  $categoryid=$this->categoryid;
+$questiontype=$this->questiontype;?>
+<div id="divCreate">
+<br/>
+  <Span id="lblName">Are you sure want to delete?</Span>
+  
+  <br/>
+  <p></p>
+    <br/>
+  <input type="button" value="Confirm" class="btn margin-left50 margin-top10" id="btnMulDelQuestion" 
+  onclick="deletingQuestion(<?php  echo $categoryid;?>,<?php  echo $questiontype;?>)"/>
+  
+   <input type="button" class="btn margin-left50 margin-top10" value="Cancel"
+				data-dismiss="modal" id="btnCancelDeleteQuestion">
+  <p></p>
+    <div id="errCatMsg" class="margin-left50"></div>
+</div>

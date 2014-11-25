@@ -1,0 +1,552 @@
+
+<div class="modal fade bs-example-modal-sm" id="alert-dialog">
+<div class="modal-dialog">
+<div class="modal-content">
+<div class="modal-header">
+<button type="button" class="close" data-dismiss="modal">&times;</button>
+<h4 class="modal-title">Alert</h4>
+</div>
+<div class="modal-body" id="successbody">Your filled data will be lost!!!</div>
+<input type="hidden" value = "" id = 't_Mul'/>
+ <div class="modal-footer">
+<input type="button" value="OK" class="btn margin-left50 margin-top10" id="btnMulDelQuestion" >
+  
+ <input type="button" class="btn margin-left50 margin-top10" value="Cancel"
+				data-dismiss="modal" id="btnCancelTypeChangeQuestion" onclick='cancelchangetype()'>
+</div>
+ 
+ 
+ 
+</div>
+</div>
+</div>
+
+<ol class="breadcrumb">
+        <li>
+          <a href="<?php echo $this->url('question', array( 'action' => 'index' ))?>">Question</a>
+        </li>
+        <li class="active">Add Question</li>
+    </ol>
+
+<div class="textarea">
+  <div class="alert alert-success" style="visibility:hidden" role="alert">
+  <p id = "success_and_alert_msg"> </p></div>
+</div>
+
+<?php if($this->success == 1){?>
+
+<script type="text/javascript">
+$(function() {
+$(".alert-success").css('visibility','visible');
+//$('#alert-dialog').modal({ backdrop: false});
+$('#success_and_alert_msg').html("Well done! You successfully added Question.");
+  window.setTimeout(function() { $(".alert-success").css('visibility','hidden'); }, 2000);
+   
+});
+   
+
+</script>
+<?php }
+
+?>
+
+<div id="textarea">
+<div class="float-right" id="content-head-right">
+
+<a id="back_to_question" class="btn font-apply inlineBlock" >Back to
+                                  Question Bank</a>
+
+                                  <!--href="<?php// echo $this->url('question',
+        //array('action'=>'index'));?>"-->
+</div>
+
+
+<?php
+$ansString = '';
+if(isset($type_selected))
+{
+
+	if ($type_selected==1 || $type_selected == 2){
+	$ansString = '';
+	for($i = 0; $i < 4; $i ++) {
+		$a = $i + 1;
+		$ansString .= "<div id='questOpt" . $i . "'><div class = 'mark_correct_opt'><label id='addnewtest_name" . $i . "'> " . $a . " <br> </label>";
+		$ansString .= " <input class = 'option_select' type ='checkbox' name='check[]' value = " . $i . " id='optionAns" . $i . "'>";
+		$ansString .= "<span class='markopt'>Mark Correct</span></div><br>";
+	
+		$ansString .= "<textarea class ='question_option_div' rows='3' cols='50'name = 'optionDescription[]' " . "id='optionDescription" . $i . "' ></textarea>";
+		$ansString .="<button id = '".$i."' type='button' class='closeOption' aria-hidden='true'" .
+				" onclick='fncRemove(this.id)'>&times;</button></div>";
+	}
+	}
+	else if ($type_selected==0){
+		$ansString = '';
+		for($i = 0; $i < 2; $i ++) {
+		
+			$a = $i + 1;
+			$f = "true";
+		
+			if($i == 1)
+				$f = "false";
+			$ansString .= "<div id='questOpt" . $i . "'><div class = 'mark_correct_opt'><label id='addnewtest_name" . $i . "'> " . $a . " <br> </label>";
+			$ansString .= " <input class = 'option_select' type ='radio' name='check[]' value = " . $i . " id='optionAns" . $i . "'>";
+			$ansString .= "<span class='markopt'>Mark Correct</span></div><br>";
+		
+			$ansString .= "<textarea class ='question_option_div' rows='3' cols='50'name = 'optionDescription[]' " .
+			 "id='optionDescription" . $i . "' readonly >".$f."</textarea></div>";
+
+		}
+
+}
+}else{
+	
+	$ansString = '';
+	for($i = 0; $i < 4; $i ++) {
+
+	$a = $i + 1;
+
+	$ansString .= "<div id='questOpt" . $i . "'><div class = 'mark_correct_opt'><label id='addnewtest_name" . $i . "'> " . $a . " <br> </label>";
+	$ansString .= " <input class = 'option_select' type ='checkbox' name='check[]' value = " . $i . " id='optionAns" . $i . "'>";
+	$ansString .= "<span class='markopt'>Mark Correct</span></div><br>";
+
+	$ansString .= "<textarea class ='question_option_div' rows='3' cols='50'name = 'optionDescription[]' " . "id='optionDescription" . $i . "' ></textarea>";
+	$ansString .="<button id = '".$i."' type='button' class='closeOption' aria-hidden='true'" .
+			" onclick='fncRemove(this.id)'>&times;</button></div>";
+}
+}
+
+
+$form = $this->form;
+$no = 0;
+$form->setAttribute ( 'action', $this->url ( 'question', array (
+'action' => 'addQuestion'
+) ) );
+$form->prepare ();
+echo $this->form ()->openTag ( $form );
+echo $this->formHidden ( $form->get ( 'id' ) );
+?>
+<div class='question-header'>
+<?php
+
+ if(isset($category_selected))
+{
+	$select = "<select class ='form-control width150' name = 'cat_id' id = 'cat_id_add'> ";
+	$select .= "<option  value = '0'>select category</option>";
+	foreach ( $categories as $k => $v ) {
+		if ($v->id == $category_selected)
+	
+			$select .= "<option selected value = '" . $v->id . "'>$v->name</option>";
+		else
+			$select .= "<option value = '" . $v->id . "'>$v->name</option>";
+	}
+	$select .= "</select> ";
+	echo $select;
+	
+}
+else {
+echo $this->formRow ( $form->get ( 'cat_id' ) );
+}
+
+
+if(isset($type_selected))
+{
+	$select = "<select class ='form-control width150' name = 'type' id = 'type'> ";
+
+	
+		if ($type_selected==1){
+			$select .= "<option selected value = '1' >Multiple</option>";
+			$select .= "<option value ='0'>True False</option>";
+			}
+		else if($type_selected==0){
+			$select .= "<option value = '1' >Multiple</option>";
+			$select .= "<option value ='0' selected>True False</option>";
+			}
+	
+	$select .= "</select> ";
+	echo $select;
+
+}else{
+echo $this->formRow ( $form->get ( 'type' ) );
+}
+?>
+
+<a id="importQuestion" class="btn font-apply inlineBlock"
+href="<?php echo $this->url ( 'question', array ('action' => 'csv'));
+?>">import</a>
+</div>
+
+<div id="category_err"></div>
+<?php
+echo $this->formHidden ( $form->get ( 'created_by' ) );
+echo $this->formHidden ( $form->get ( 'created_on' ) );
+echo $this->formHidden ( $form->get ( 'updated_by' ) );
+echo $this->formHidden ( $form->get ( 'updated_on' ) );
+
+?>
+              <div id="question_type_err"></div>
+<fieldset class="fontapply question-field">
+   <h3>Question</h3>
+              <?php
+echo $this->formElement ( $form->get ( 'description' ) );
+
+echo $this->formElementerrors($form->get('description'));
+echo "<br>";
+   ?>
+              <div id="description_err"></div>
+              <?php
+echo $this->formHidden ( $form->get ( 'status' ) );
+echo $this->formRow ( $form->get ( 'points' ) );
+echo "<br>";
+?>
+<div id="points_err"></div>
+<div id="points_err1"></div>
+<h3>Answers</h3>
+<div id="multiple">
+<div id='appendOptions'><?php echo $ansString;?></div>
+<div id = "submit_div">
+  <div id ="add_more_div">
+  <?php 
+if(isset($type_selected)){
+	if($type_selected==1){
+?>
+<input type="button" id="btnAddMore" class="btn"
+value="Add  More Option" onclick='fncAddRows(1,1)'>
+<?php }else if($type_selected==0){?>
+<input type="button" id="btnAddMore" class="btn"
+value="Add  More Option" onclick='fncAddRows(1,1)' style="display:none">
+<?php }}else {?>
+<input type="button" id="btnAddMore" class="btn"
+value="Add  More Option" onclick='fncAddRows(1,1)'>
+<?php }?>
+</div>
+    <?php echo $this->formhidden($form->get('hdnCount'));?>
+<div id = "submit_btn_div" onclick = "des_val()">
+<?php
+
+echo $this->formsubmit ( $form->get ( 'submit' ) );
+?>
+</div>
+<div id="T_F_option_select_err"></div>
+
+<div id="option_select_err"></div>
+<div id="option_select_err_addoption"></div>
+</div>
+<?php
+echo $this->form ()->closeTag ();
+?>
+
+</div>
+
+</div>
+
+</fieldset>
+
+<div class="modal fade" id="importQuestionDiv" tabindex="-1"
+role="dialog" aria-labelledby="myModalLabel" aria-hidden="true"></div>
+</div>
+
+
+
+<script type="text/javascript">
+
+function fncAddRows(argCount,argFlag)
+{
+   var start = parseInt($("#hdnCount").val())+1;
+   var iCnt = parseInt($("#hdnCount").val())+argCount ;
+ 
+   if(iCnt<10)
+   {
+   $("#hdnCount").val(iCnt);
+   if(argFlag=="1") {
+   for(i=start;i<=iCnt;i++) {
+           var a = i+1;
+           var strOption="<div id='questOpt"+i+"'><div class = 'mark_correct_opt'><label id='addnewtest_name"+i+"'> "
+           + a + " <br> </label>";
+           strOption+="<input type ='checkbox' name='check[]'  value = "+i+" id='optionAns"+i+"'>";
+           strOption+="<span class='markopt'>Mark Correct</span></div><br>";
+        
+           strOption+="<textarea class ='question_option_div' rows='3' cols='50' name = 'optionDescription[]' " +
+           "id='optionDescription"+i+"' ></textarea>";
+           strOption+="<button id = "+i+" type='button' class='closeOption' aria-hidden='true'" +
+           " onclick='fncRemove(this.id)'>&times;</button></div>";
+           $('#appendOptions').append(strOption);
+    
+       }
+   }
+
+   }else{
+	   $("#option_select_err_addoption").html("options cannot be more than 10");
+
+       $("#btnAddMore").prop("disabled", true);
+     
+   }
+   $("#btnAddMore").show();
+}
+
+
+
+function fncChangeMultiple(argCount,argFlag)
+{
+   var start = parseInt($("#hdnCount").val())+1;
+   var iCnt = parseInt($("#hdnCount").val())+argCount ;
+ 
+   if(iCnt<10)
+   {
+   $("#hdnCount").val(iCnt);
+   if(argFlag=="1") {
+   for(i=start;i<=iCnt;i++) {
+           var a = i+1;
+           var strOption="<div id='questOpt"+i+"'><div class = 'mark_correct_opt'><label id='addnewtest_name"+i+"'> "
+           + a + " <br> </label>";
+           strOption+="<input type ='checkbox' name='check[]'  value = "+i+" id='optionAns"+i+"'>";
+           strOption+="<span class='markopt'>Mark Correct</span></div><br>";
+        
+           strOption+="<textarea class ='question_option_div' rows='3' cols='50' name = 'optionDescription[]' " +
+           "id='optionDescription"+i+"' ></textarea></div>";
+         
+           $('#appendOptions').append(strOption);
+    
+       }
+   }
+
+   }else{
+	   $("#option_select_err_addoption").html("options cannot be more than 10");
+       $("#btnAddMore").prop("disabled", true);
+      
+   }
+   $("#btnAddMore").show();
+}
+
+
+function fncAddRowsTf()
+{
+   $("#hdnCount").val(2);
+   for(i=0;i<2;i++) {
+       var a = i+1;
+       var f = true;
+       if(i == 1)
+       f = false;
+
+       var strOption="<div id='questOpt"+i+"'><div class = 'mark_correct_opt'><label id='addnewtest_name"+i+"'> "+ a + " <br> </label>";
+       strOption+="<input type ='radio' class = 'T_F_Select' name='check[]'  value = "+i+" id='optionAns"+i+"'>";
+       strOption+="<span class='markopt'>Mark Correct</span></div><br>";
+   
+       strOption+="<textarea class ='question_option_div' rows='3' cols='50' name = 'optionDescription[]' " +
+       "id='optionDescription"+i+"' readonly >"+f+"</textarea></div>";
+    
+       $('#appendOptions').append(strOption);
+     
+     
+   }
+   $("#btnAddMore").hide();
+}
+
+
+
+function fncRemove(argId)
+{
+    var temp = parseInt($("#hdnCount").val());
+    if(temp >= 4)
+    {
+
+   	 $("#btnAddMore").prop("disabled", false);
+     $("#option_select_err_addoption").html(" ");
+    $("#questOpt"+argId).remove();
+
+    //next to removed value(current)
+    var current = argId;
+    current++;
+
+    //last value
+    var end = temp;
+   
+       while(  current <= temp)
+       {
+
+          //removed value
+          var pre = current;
+          pre = pre -1;
+        
+
+          $("#questOpt"+current).attr('id',"questOpt"+pre);
+          $("#addnewtest_name"+current).html(current);
+          $("#addnewtest_name"+current).attr('id',"addnewtest_name"+pre);
+         
+        
+           $("#optionAns"+current).val(pre);
+           $("#optionAns"+current).attr('id',"#optionAns"+pre);
+           $("#optionDescription"+current).attr('id',"optionDescription"+pre);
+           $("#"+current).attr('id',pre);
+          current++;
+       }
+ 
+    temp--;
+   
+    $("#hdnCount").val(temp);
+    }
+    else
+    {
+	$(".alert-success").css('visibility','visible')
+    	
+    	$('#success_and_alert_msg').html("Can not delete more option..");
+   	 window.setTimeout(function()  { $(".alert-success").css('visibility','hidden'); }, 2000);
+       
+    }
+   
+}
+
+my_condition = true;
+var lastSel = $("#type option:selected");
+
+$("#type").change(function(){
+	
+
+
+	 lastSel = $("#type option:selected");
+   
+	 if(lastSel.val()==0)
+	 {
+	var answer_data = $('.question_option_div').val();
+	var testchecked_multiple = jQuery(':checkbox:checked').length;
+	if(answer_data != '' || testchecked_multiple == 1){
+		
+		$('#alert-dialog').modal('show');
+    $('#t_Mul').val(2);
+
+	}
+  else
+  {
+     var argCount = parseInt($("#hdnCount").val());
+       for(i=0;i<=argCount;i++) {
+           $("#questOpt"+i).remove();
+       }
+       $("#hdnCount").val(0);
+       fncAddRowsTf();
+  }
+	 }
+   else if(lastSel.val()==1)
+   {
+    var testchecked = jQuery(':radio:checked').length;
+
+    if( testchecked == 1){
+      $('#alert-dialog').modal('show');
+      $('#t_Mul').val(1);
+    }
+    else
+    {
+       var argCount=2;
+  
+       for(i=0;i<=argCount;i++) {
+           $("#questOpt"+i).remove();
+       }
+       $("#hdnCount").val(-1);
+       fncChangeMultiple(4,"1");
+    }
+
+
+   }
+
+});
+
+
+$("#btnCancelTypeChangeQuestion").click(function(){
+ var hid_t =$('#t_Mul').val();
+  if(hid_t == 1)
+  {
+$('[name=type]').val( 0 );
+  }
+  else
+  {
+    $('[name=type]').val( 1 );
+  }
+});
+$("#btnMulDelQuestion").click(function(){
+
+  var hid_t =$('#t_Mul').val();
+  if(hid_t == 1)
+  {
+    var argCount=2;
+  
+       for(i=0;i<=argCount;i++) {
+           $("#questOpt"+i).remove();
+       }
+       $("#hdnCount").val(-1);
+       fncChangeMultiple(4,"1");
+       $('#alert-dialog').modal('hide');
+  }
+  else
+  {
+  var argCount = parseInt($("#hdnCount").val());
+       for(i=0;i<=argCount;i++) {
+           $("#questOpt"+i).remove();
+       }
+       $("#hdnCount").val(0);
+       fncAddRowsTf();
+
+       $('#alert-dialog').modal('hide');
+     }
+});
+
+
+function cancelchangetype()
+{
+	$('#alert-dialog').modal('hide');
+}
+
+
+$("#cat_id_add").change(function(){
+
+	
+	   $.ajax({
+			url : "../addQuestion",
+			data : "categorytype=" + $('#cat_id_add').val()	+ "&questiontype=" + $('#type').val(),
+			success : function(data) {
+				
+				},
+			error : function(data) {
+			console.log(data);
+		},
+		});
+	   
+});
+
+$("#type").change(function(){
+  
+
+   $.ajax({
+		url : "../addQuestion",
+		data : "categorytype=" + $('#cat_id_add').val()	+ "&questiontype=" + $('#type').val(),
+		success : function(data) {
+			
+			},
+		error : function(data) {
+		console.log(data);
+	},
+	});
+   
+});
+
+
+
+
+
+
+$(document).ready(function(){
+  $("#description_id").on("keypress", function(e) {
+  if (e.which === 32 && !this.value.length)
+      e.preventDefault();
+  });
+
+  $("#point").on("keypress", function(e) {
+  if (e.which === 32 && !this.value.length)
+      e.preventDefault();
+  });
+
+  $(".question_option_div").on("keypress", function(e) {
+  if (e.which === 32 && !this.value.length)
+    e.preventDefault();
+  });
+});
+
+
+</script>

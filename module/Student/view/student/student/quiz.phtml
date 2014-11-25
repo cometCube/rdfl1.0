@@ -1,0 +1,173 @@
+<?php
+use Zend\Session\Container;
+$quizSession = new Container('quiz');
+
+/*   $email = "dhirendra.pandey@osscube.com";ss
+   $gravatar_link = 'http://www.gravatar.com/avatar/' . md5($email) . '?s=128';
+   echo '<img src="' . $gravatar_link . '" />';
+*/
+
+//\Zend\Debug\Debug::dump($arrData);
+$testName ="Test Name";
+$linkId="";
+if(isset($arrData) && !empty($arrData)) {
+	//\Zend\Debug\Debug::dump($arrData);
+	$arrData = $arrData[0];
+	$arrData['time'] *= 60;
+
+	$testName = $arrData['testName'];
+	$linkId = $arrData['linkId'];
+}
+?>
+	  <div id="content">
+      <div id="main-container">
+      <h2><span class="black">Test:</span> <?php echo $testName; ?></h2>
+	  	<div id="login-window">
+	  	  <div id="login-top">
+	  	  	<div id="user-icon"></div>	<!-- user icon -->
+	  	  	<span id="login-text">LOGIN</span>
+	  	  </div> <!-- end of lg-top -->
+	  	  <hr />
+	  	  <p id="login-text2"></p>
+	  	  
+	  	  <div id="lg-middle">
+
+	  	  <?php
+	  	 	$form->setAttribute('action', $this->url('student', array('action' => 'quiz','clientid' => $quizSession->clientId,'linkid' => $quizSession->linkId,'code' => $quizSession->code )));
+			$form->prepare();
+
+			echo $this->form()->openTag($form);
+
+			if(isset($arrData['password'])&&($arrData['password']!=null))
+			{
+
+
+			echo " ".$this->formElement($form->get('pass')->setAttribute('id','txtPass'));
+			echo "<div class='passerror'>".$this->FormElementErrors($form->get('pass'))."</div>";
+			}
+
+			if(isset($arrData['email'])&&($arrData['email']!=0))
+			{
+				echo " ".$this->formelement($form->get('email')->setAttribute('id','txtUserName'));
+				echo "<div class='error'>".$this->FormElementErrors($form->get('email'))."</div>";
+			}
+		
+			if(isset($arrData['firstname'])&&($arrData['firstname']!=0))
+			{
+				echo " ".$this->formElement($form->get('firstname')->setAttribute('id','txtFname'));
+				echo "<div class='error'>".$this->FormElementErrors($form->get('firstname'))."</div>";
+			}
+			if(isset($arrData['lastname'])&&($arrData['lastname']!=0))
+			{
+				echo " ".$this->formElement($form->get('lastname')->setAttribute('id','txtLname'));
+			echo "<div class='error'>".$this->FormElementErrors($form->get('lastname'))."</div>";
+			}
+		
+			
+			
+			
+			
+			echo " ".$this->formSubmit($form->get('login')->setAttribute('class','button-style'));
+			
+
+			/*
+			 * For rendering form in a single statement
+			 * ---------------------------------------
+			echo $this->formCollection($form);
+			 *
+			 */
+			echo $this->form()->closeTag();
+			?>
+	  	  
+	  	  </div> <!-- end of lg-middle -->
+
+          
+	  	  <div id="lg-bottom">
+         
+	  	    <div id="oss-logo"></div>
+	  	    
+            </div> <!-- end of lg-bottom -->
+        </div> <!-- end of login window -->
+</div>
+    </div> <!-- end of content -->
+
+	<script type="text/javascript" src="<?php echo JS_PATH;?>main.script.js"></script>
+	<script type="text/javascript" src="<?php echo JS_PATH;?>script.js"></script>
+	
+	<script type="text/javascript">
+	$(document).ready(function() {
+		var check_pass='<?php echo $arrData['password']; ?>';
+		if(check_pass)
+		{
+		$('#txtFname').attr('disabled','disabled');
+		$('#txtLname').attr('disabled','disabled');
+		$('#txtUserName').attr('disabled','disabled');
+		$('#loginbtn').attr('disabled','disabled');
+		}
+
+		
+		 });
+	$(document).on('blur','#txtUserName',function(){	
+	var regEmail = $(this).val();
+	$.ajax({
+
+			type: 'POST',
+			data: {email:regEmail},
+			dataType: 'json',
+			url: '/student/checkStudentStatus',
+
+			success:function(data){
+				if(data.flag == 1){
+					$('#txtFname').val(data.student_array['fname']).attr('readonly','readonly');
+					$('#txtLname').val(data.student_array['lname']).attr('readonly','readonly');
+				}
+				else{
+					$('#txtFname').removeAttr('readonly','readonly');
+					$('#txtLname').removeAttr('readonly','readonly');
+				} 
+			}
+		});
+	});
+
+	$(document).on('focus','#txtPass',function(){	
+		$('.passerror').html("");
+	});
+
+	$(document).on('blur','#txtPass',function(){	
+	var regPass = $(this).val();
+	
+	$.ajax({
+
+			type: 'POST',
+			data: {pass:regPass},
+			dataType: 'json',
+			url: '/student/checklinkpassword',
+
+			success:function(data){
+				if(data.flag == 1){
+					$('#txtFname').removeAttr('disabled');
+					$('#txtLname').removeAttr('disabled');
+					$('#txtUserName').removeAttr('disabled');
+					$('#loginbtn').removeAttr('disabled');
+				}
+				else
+				{
+					$('#txtFname').attr('disabled','disabled');
+					$('#txtLname').attr('disabled','disabled');
+					$('#txtUserName').attr('disabled','disabled');
+					$('#loginbtn').attr('disabled','disabled');
+					$(".passerror").html("Password is incorect");
+
+
+				}
+			}
+		});
+	});
+
+
+</script>
+
+	 
+	 
+	 
+	

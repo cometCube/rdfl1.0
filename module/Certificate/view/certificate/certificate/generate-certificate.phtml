@@ -1,0 +1,28 @@
+<style>
+#certificateTitleMain {
+  display: block;
+    min-width: 100%;
+    text-align: center;
+}
+#certificateAssignedtoMain {
+  display: block;
+    min-width: 100%;
+    text-align: center;
+  margin-top:250px;
+}
+
+.certificate-container{margin-left:auto; text-align:center; margin-top:40px; font-size:30px;}
+</style>
+<html>
+  <body style="background-image:<?php echo $this->basepath()?>url('/img/<?php echo $certiImage?>.jpg');">
+      <h1 id="certificateTitleMain"><?php echo $title?></h1>
+      <label><h1 id="certificateAssignedtoMain" ><?php echo ucwords($name)?></h1></label>
+           <div class="certificate-container">
+      		<?php echo ucwords($name)?> has scored <?php echo $percentage;?> % in the <?php echo $title?>
+      		<br>
+      		and successfully passed the test conducted by Osscube solutions
+      		<br>
+      		on <?php echo $date?>
+      		</div>
+  </body>
+</html>

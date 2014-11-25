@@ -1,0 +1,322 @@
+    <?php 
+    	
+    	function calculateTime($time)
+    	{
+    		$hr='00';
+    		$min='00';
+    		$sec = '00';
+    		if($time<=0) {
+    			$time =0;
+    			// header('location: ')
+    		}
+    		$sec = $time;
+    		if($sec>60) {
+    			$min= intval($sec/60);
+    			$sec = $sec%60;
+    		}
+    		if($min>60) {
+    			$hr = intval($min/60);
+    			$min = $min%60;
+    		}
+    		if(strlen($sec) < 2){
+    			$sec = "0".$sec;
+    		}
+    		$duration = $hr."hrs : ".$min."mins : ".$sec."secs" ;
+    		return $duration;
+    	}
+    	
+   
+    ?>
+   
+      	<div class="row-midlarge">
+            <div id="table-content">
+                   <div id="d-table-menu">
+            <a id="btnDeleteAllbtnResult" class="deletebtn" data-toggle="modal" data-target="#myModal" title="Delete Selected Test" href="#"></a>
+           
+           <!--  <a id="btnCertificateCreate" href="/certificate/add" class="btn fontapply">+ NEW CERTIFICATE</a>
+             -->
+             	
+             <select id="testselect" class="form-control quesDisplayList" name="categoryselect">
+            	<option value="">Display by Tests</option>
+            
+            	<?php foreach ($tests as $x) : 
+				if(isset($this->testname))
+				{
+					if($this->testname==$x['testname'])
+					{?>
+					<option value = "<?php echo $x['testname'];?>" selected><?php echo $x['testname'];?></option>
+					<?php }
+					else 
+					{?>
+					<option value = "<?php echo $x['testname'];?>"><?php $x['testname'];?></option>
+				<?php }	
+				}else{?>
+                <option value="<?php echo $x['testname']; ?>"><?php echo $x['testname']; ?></option>
+            	 <?php }endforeach;?>   
+     		</select>
+     
+       </div>
+            <table cellpadding="0" cellspacing="0" border="0" class="ResultTable table-bordered" id="example">
+		      <thead>
+				<tr>
+				    <th><input type="checkbox" id="chkAll" /></th>
+		            <th>Student Name</th>
+		            <th>Email</th>
+		            <th>Test</th>
+		            <th>Score(%)</th>
+		            <th class="action">Actions</th>
+				</tr>
+			  </thead>
+			   
+			  <tbody>
+			  
+			  <?php 
+			  foreach ($results as $result) :
+			  ?>
+			     <tr>
+			        <td><input type="checkbox" value="<?php  echo $this->escapehtml($result['id']);?>" name="deleteall"></td>
+			        <td><?php  echo $this->escapehtml($result['stuFname'].$result['stuLname']);?></td>
+			        <td><?php  echo $this->escapehtml($result['stuEmail']);?></td>
+			        <td><?php echo $this->escapehtml($result['testname']);?></td>
+			    	<td><?php echo $this->escapehtml($result['percentage']);?></td>
+			    				   
+			    	<td>              
+		          		<a href="#" data-toggle="modal" data-target="#myModal">
+		          		<div class="delete-btn" onclick="btnDeleteResult(<?php echo $this->escapehtml($result['id']); ?>)" ></div></a>
+		          		
+		          		<a href="#"><div class="view-btn" id="<?php echo $this->escapehtml($result['id']); ?>"></div></a>
+		         
+		          		<div class="div-details" id="details<?php echo $this->escapehtml($result['id']); ?>">
+		          			<div class="Quesdetails-left">Test :<strong><?php echo $this->escapehtml($result['testname']); ?></strong><br>
+		                                                  Link : <strong><?php  echo $this->escapehtml($result['linkName']);?></strong><br>
+		                                                  Code : <strong><?php  echo $this->escapehtml($result['linkCode']);?></strong><br>
+		                          </div>
+		                          
+		                          <div class="Resultdetails-right margin-top0 ">Duration : <strong><?php  echo strtolower(calculateTime($result['duration']));?><br></strong>
+		                                                          Time Started  : <strong><?php  echo $this->escapehtml($result['date_started']);?></strong><br>
+		                                                          Time Finished : <strong><?php  echo $this->escapehtml($result['date_finished']);?></strong><br>
+		                          </div>
+		        		</div> <!-- end of div-details -->
+		       	</td>
+		       </tr>
+		       <?php endforeach;?>   
+			</tbody>
+		   </table>
+          </div>
+	</div>
+
+            <!-- Modal -->
+            <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+              <div class="modal-dialog">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h4 class="modal-title" id="myModalLabel">Modal title</h4>
+                  </div>
+                  <div id="modal-body" class="modal-body">
+                
+
+                  </div>
+                </div>
+              </div>
+            </div>
+
+    
+    <script type="text/javascript">
+
+        /* Formating function for row details */
+        function fnFormatDetails ( oTable, nTr, ele )
+        {
+            var elemnt = "#details"+ele;
+            var aData = oTable.fnGetData( nTr );
+            var sOut    =  $(elemnt).html();
+            return sOut;
+        }
+
+
+	
+	/* API method to get paging information */
+$.fn.dataTableExt.oApi.fnPagingInfo = function ( oSettings )
+{
+    return {
+        "iStart":         oSettings._iDisplayStart,
+        "iEnd":           oSettings.fnDisplayEnd(),
+        "iLength":        oSettings._iDisplayLength,
+        "iTotal":         oSettings.fnRecordsTotal(),
+        "iFilteredTotal": oSettings.fnRecordsDisplay(),
+        "iPage":          oSettings._iDisplayLength === -1 ?
+            0 : Math.ceil( oSettings._iDisplayStart / oSettings._iDisplayLength ),
+        "iTotalPages":    oSettings._iDisplayLength === -1 ?
+            0 : Math.ceil( oSettings.fnRecordsDisplay() / oSettings._iDisplayLength )
+    };
+}
+ 
+/* Bootstrap style pagination control */
+$.extend( $.fn.dataTableExt.oPagination, {
+    "bootstrap": {
+        "fnInit": function( oSettings, nPaging, fnDraw ) {
+            var oLang = oSettings.oLanguage.oPaginate;
+            var fnClickHandler = function ( e ) {
+                e.preventDefault();
+                if ( oSettings.oApi._fnPageChange(oSettings, e.data.action) ) {
+                    fnDraw( oSettings );
+                }
+            };
+ 
+            $(nPaging).addClass('pagination').append(
+                '<ul>'+
+                    '<li class="prev disabled"><a href="#">&larr; '+oLang.sPrevious+'</a></li>'+
+                    '<li class="next disabled"><a href="#">'+oLang.sNext+' &rarr; </a></li>'+
+                '</ul>'
+            );
+            var els = $('a', nPaging);
+            $(els[0]).bind( 'click.DT', { action: "previous" }, fnClickHandler );
+            $(els[1]).bind( 'click.DT', { action: "next" }, fnClickHandler );
+        },
+ 
+        "fnUpdate": function ( oSettings, fnDraw ) {
+            var iListLength = 5;
+            var oPaging = oSettings.oInstance.fnPagingInfo();
+            var an = oSettings.aanFeatures.p;
+            var i, j, sClass, iStart, iEnd, iHalf=Math.floor(iListLength/2);
+ 
+            if ( oPaging.iTotalPages < iListLength) {
+                iStart = 1;
+                iEnd = oPaging.iTotalPages;
+            }
+            else if ( oPaging.iPage <= iHalf ) {
+                iStart = 1;
+                iEnd = iListLength;
+            } else if ( oPaging.iPage >= (oPaging.iTotalPages-iHalf) ) {
+                iStart = oPaging.iTotalPages - iListLength + 1;
+                iEnd = oPaging.iTotalPages;
+            } else {
+                iStart = oPaging.iPage - iHalf + 1;
+                iEnd = iStart + iListLength - 1;
+            }
+ 
+            for ( i=0, iLen=an.length ; i<iLen ; i++ ) {
+                // Remove the middle elements
+                $('li:gt(0)', an[i]).filter(':not(:last)').remove();
+ 
+                // Add the new list items and their event handlers
+                for ( j=iStart ; j<=iEnd ; j++ ) {
+                    sClass = (j==oPaging.iPage+1) ? 'class="active"' : '';
+                    $('<li '+sClass+'><a href="#">'+j+'</a></li>')
+                        .insertBefore( $('li:last', an[i])[0] )
+                        .bind('click', function (e) {
+                            e.preventDefault();
+                            oSettings._iDisplayStart = (parseInt($('a', this).text(),10)-1) * oPaging.iLength;
+                            fnDraw( oSettings );
+                        } );
+                }
+ 
+                // Add / remove disabled classes from the static elements
+                if ( oPaging.iPage === 0 ) {
+                    $('li:first', an[i]).addClass('disabled');
+                } else {
+                    $('li:first', an[i]).removeClass('disabled');
+                }
+ 
+                if ( oPaging.iPage === oPaging.iTotalPages-1 || oPaging.iTotalPages === 0 ) {
+                    $('li:last', an[i]).addClass('disabled');
+                } else {
+                    $('li:last', an[i]).removeClass('disabled');
+                }
+            }
+        }
+    }
+} );
+
+$(document).ready(function() {
+
+			
+	var oTable = $('#example').dataTable( {
+		"bLengthChange": false,
+		"bFilter": true,
+		"bInfo": true,
+		"bAutoWidth": false,
+		"sPaginationType": "bootstrap",
+		"aoColumnDefs": [	//Initialse DataTables, with no sorting on the 'checkbox' column
+            { "bSortable": false, "aTargets": [ 0 ] }
+        ],
+        "aaSorting": [[1, 'asc']]
+		} );
+	<?php if(isset($this->testname))
+				{?>
+				oTable.fnFilter( "<?php echo $this->testname; ?>" ); 
+				<?php }?>
+	$('#testselect').change( function() { 
+        oTable.fnFilter( $(this).val() ); 
+   });
+   	/* Add event listener for opening and closing details
+     * Note that the indicator for showing which row is open is not controlled by DataTables,
+     * rather it is done here
+     */
+
+
+
+    //used to send test id to the viewTest function in test controller
+    $(document).on('click','.view-btn, .hide-btn',
+    			function () {
+         
+
+         if ($(this).attr("class") == "view-btn") {
+
+                $(this).removeClass("view-btn");
+                $(this).addClass("hide-btn");
+ 
+        }
+        else{
+            $(this).removeClass("hide-btn");
+            $(this).addClass("view-btn");
+        }
+
+         var ele = $(this).attr('id');
+        var nTr = $(this).parents('tr')[0];
+        if ( oTable.fnIsOpen(nTr) )
+        {
+            /* This row is already open - close it */
+            this.src = "../examples_support/details_open.png";
+            oTable.fnClose( nTr );
+        }
+        else
+        {
+            /* Open this row */
+            this.src = "../examples_support/details_close.png";
+            oTable.fnOpen( nTr, fnFormatDetails(oTable, nTr,ele), 'details' );
+        }
+    });
+	 
+});
+
+$.fn.dataTableExt.oStdClasses["sFilter"] = "Dfilter";
+$('#example_wrapper').css("margin-top","50px");
+</script>
+<script>
+
+$(document).ready(function() {
+     $('#chkAll').click (function () {
+          $(':checkbox[name=deleteall]').prop('checked', this.checked);
+        });
+});  
+
+
+
+
+ // used to send test id to viewTestInfo function in test controller
+
+
+function addClassCurrent(element)
+{
+	var el="#ico"+element;
+	$(el).addClass("current");
+}
+
+function removeClassCurrent(element)
+{
+	var el="#ico"+element;
+	$(el).removeClass("current");
+}
+$('#footer').css("padding-top","30px");
+</script>

@@ -1,0 +1,300 @@
+<div class="row-midlarge">
+    <div id="table-content">
+        <div id="d-table-menu">
+            <a class="deletebtn" onclick = 'multiDeleteCertificate()' href="#">
+            </a>
+            <a id="btnCertificateCreate" href="/certificate/createNewCertificate" class="btn fontapply">+ NEW CERTIFICATE
+            </a>
+        </div>
+
+        <table cellpadding="0" cellspacing="0" border="0" class="CertificateTable table-bordered" id="example">
+		<thead>
+			<tr>
+			    <th><input type="checkbox" id="chkAll" /></th>
+		        <th>Title</th>
+		        <th>Assigned</th>
+		        <th>Date</th>
+		        <th class="action">Actions</th>
+			</tr>
+		</thead>
+
+		<tbody> 
+		    <?php 
+		        foreach ($certificates as $certificate) :
+            ?>
+			<tr>
+			    <td><input type="checkbox" value="<?php  echo $this->escapehtml($certificate->id);?>" name="deleteall">
+                </td>
+			    <td><?php  echo $this->escapehtml($certificate->title);?></td>
+			    <td><?php  echo $this->escapehtml($certificate->assigned_to);?></td>
+			    <td><?php $date = date_create($certificate->created_on);  echo $this->escapehtml(date_format($date,'d M Y'));?>
+                </td>
+			    <td>
+                    <a href="#">
+                        <div id='deleteIcon<?php echo $certificate->id;?>' 
+                         class="delete-btn" onclick='deleteCertificate(<?php echo $certificate->id; ?>)'
+                         data-title='<?php echo $certificate->title; ?>' >
+                        </div>
+                    </a>
+                    <?php 
+                    	$url = $this->url ( 'certificate', array (
+									'action' => 'viewCertificate',
+									'id' => $certificate->id, 
+								) );
+					?>
+                    <a href='<?php echo $url?>'>
+                        <div class="view-btn" id="viewIcon<?php echo $certificate->id ?>"></div>
+                    </a>
+                </td>
+            </tr>
+            <?php 
+                endforeach;
+            ?>   
+		</tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+</div>
+
+    
+    <script type="text/javascript">
+
+        /* Formating function for row details */
+        function fnFormatDetails ( oTable, nTr, ele )
+        {
+            var elemnt = "#details"+ele;
+            var aData = oTable.fnGetData( nTr );
+            var sOut    =  $(elemnt).html();
+            return sOut;
+        }
+
+
+	
+	/* API method to get paging information */
+$.fn.dataTableExt.oApi.fnPagingInfo = function ( oSettings )
+{
+    return {
+        "iStart":         oSettings._iDisplayStart,
+        "iEnd":           oSettings.fnDisplayEnd(),
+        "iLength":        oSettings._iDisplayLength,
+        "iTotal":         oSettings.fnRecordsTotal(),
+        "iFilteredTotal": oSettings.fnRecordsDisplay(),
+        "iPage":          oSettings._iDisplayLength === -1 ?
+            0 : Math.ceil( oSettings._iDisplayStart / oSettings._iDisplayLength ),
+        "iTotalPages":    oSettings._iDisplayLength === -1 ?
+            0 : Math.ceil( oSettings.fnRecordsDisplay() / oSettings._iDisplayLength )
+    };
+}
+ 
+/* Bootstrap style pagination control */
+$.extend( $.fn.dataTableExt.oPagination, {
+    "bootstrap": {
+        "fnInit": function( oSettings, nPaging, fnDraw ) {
+            var oLang = oSettings.oLanguage.oPaginate;
+            var fnClickHandler = function ( e ) {
+                e.preventDefault();
+                if ( oSettings.oApi._fnPageChange(oSettings, e.data.action) ) {
+                    fnDraw( oSettings );
+                }
+            };
+ 
+            $(nPaging).addClass('pagination').append(
+                '<ul>'+
+                    '<li class="prev disabled"><a href="#">&larr; '+oLang.sPrevious+'</a></li>'+
+                    '<li class="next disabled"><a href="#">'+oLang.sNext+' &rarr; </a></li>'+
+                '</ul>'
+            );
+            var els = $('a', nPaging);
+            $(els[0]).bind( 'click.DT', { action: "previous" }, fnClickHandler );
+            $(els[1]).bind( 'click.DT', { action: "next" }, fnClickHandler );
+        },
+ 
+        "fnUpdate": function ( oSettings, fnDraw ) {
+            var iListLength = 5;
+            var oPaging = oSettings.oInstance.fnPagingInfo();
+            var an = oSettings.aanFeatures.p;
+            var i, j, sClass, iStart, iEnd, iHalf=Math.floor(iListLength/2);
+ 
+            if ( oPaging.iTotalPages < iListLength) {
+                iStart = 1;
+                iEnd = oPaging.iTotalPages;
+            }
+            else if ( oPaging.iPage <= iHalf ) {
+                iStart = 1;
+                iEnd = iListLength;
+            } else if ( oPaging.iPage >= (oPaging.iTotalPages-iHalf) ) {
+                iStart = oPaging.iTotalPages - iListLength + 1;
+                iEnd = oPaging.iTotalPages;
+            } else {
+                iStart = oPaging.iPage - iHalf + 1;
+                iEnd = iStart + iListLength - 1;
+            }
+ 
+            for ( i=0, iLen=an.length ; i<iLen ; i++ ) {
+                // Remove the middle elements
+                $('li:gt(0)', an[i]).filter(':not(:last)').remove();
+ 
+                // Add the new list items and their event handlers
+                for ( j=iStart ; j<=iEnd ; j++ ) {
+                    sClass = (j==oPaging.iPage+1) ? 'class="active"' : '';
+                    $('<li '+sClass+'><a href="#">'+j+'</a></li>')
+                        .insertBefore( $('li:last', an[i])[0] )
+                        .bind('click', function (e) {
+                            e.preventDefault();
+                            oSettings._iDisplayStart = (parseInt($('a', this).text(),10)-1) * oPaging.iLength;
+                            fnDraw( oSettings );
+                        } );
+                }
+ 
+                // Add / remove disabled classes from the static elements
+                if ( oPaging.iPage === 0 ) {
+                    $('li:first', an[i]).addClass('disabled');
+                } else {
+                    $('li:first', an[i]).removeClass('disabled');
+                }
+ 
+                if ( oPaging.iPage === oPaging.iTotalPages-1 || oPaging.iTotalPages === 0 ) {
+                    $('li:last', an[i]).addClass('disabled');
+                } else {
+                    $('li:last', an[i]).removeClass('disabled');
+                }
+            }
+        }
+    }
+} );
+
+$(document).ready(function() {
+
+			
+	var oTable = $('#example').dataTable( {
+		"bLengthChange": false,
+		"bFilter": true,
+		"bInfo": true,
+		"bAutoWidth": false,
+		"sPaginationType": "bootstrap",
+		"aoColumnDefs": [	//Initialse DataTables, with no sorting on the 'checkbox' column
+            { "bSortable": false, "aTargets": [ 0 ] }
+        ],
+        "aaSorting": [[1, 'asc']]
+		} );
+   	/* Add event listener for opening and closing details
+     * Note that the indicator for showing which row is open is not controlled by DataTables,
+     * rather it is done here
+     */
+
+
+
+    //used to send test id to the viewTest function in test controller
+//     $('.view-btn, .hide-btn').click(function () {
+         
+
+//          if ($(this).attr("class") == "view-btn") {
+
+//                 $(this).removeClass("view-btn");
+//                 $(this).addClass("hide-btn");
+ 
+//         }
+//         else{
+//             $(this).removeClass("hide-btn");
+//             $(this).addClass("view-btn");
+//         }
+
+//          var ele = $(this).attr('id');
+//         var nTr = $(this).parents('tr')[0];
+//         if ( oTable.fnIsOpen(nTr) )
+//         {
+//             /* This row is already open - close it */
+//             this.src = "../examples_support/details_open.png";
+//             oTable.fnClose( nTr );
+//         }
+//         else
+//         {
+//             /* Open this row */
+//             this.src = "../examples_support/details_close.png";
+//             oTable.fnOpen( nTr, fnFormatDetails(oTable, nTr,ele), 'details' );
+//         }
+//     });
+	 
+});
+
+$.fn.dataTableExt.oStdClasses["sFilter"] = "Dfilter";
+$('#example_wrapper').css("margin-top","50px");
+</script>
+<script>
+
+$(document).ready(function() {
+     $('#chkAll').click (function () {
+          $(':checkbox[name=deleteall]').prop('checked', this.checked);
+        });
+});  
+
+
+
+
+ // used to send test id to viewTestInfo function in test controller
+
+
+function addClassCurrent(element)
+{
+	var el="#ico"+element;
+	$(el).addClass("current");
+}
+
+function removeClassCurrent(element)
+{
+	var el="#ico"+element;
+	$(el).removeClass("current");
+}
+$('#footer').css("padding-top","30px");
+
+
+//modal dialogs
+function deleteCertificate(deleteId)
+{
+    var certificateTitle = $('#deleteIcon'+deleteId).data('title');
+
+    $.ajax({
+        type: "GET",
+        data: {title: certificateTitle},
+        url: '/certificate/deleteCertificate/'+deleteId,
+        dataType: 'html',
+        success:function(data){
+            $('#myModal').html(data);
+            $('#myModal').modal('show');
+        },  
+    });
+}
+
+function multiDeleteCertificate()
+{
+    var certificateIds = $('input[name="deleteall"]:checked').map(function() {
+            return $(this).val();
+    }).get();
+
+    if (certificateIds.length != 0) {
+
+        $.ajax({
+            type: "GET",
+            data: '',
+            url: '/certificate/multiDeleteCertificate?certificateIds='+certificateIds,
+            dataType: 'html',
+            success:function(data){
+                $('#myModal').html(data);
+                $('#myModal').modal('show');
+            },  
+        });
+    } else {
+
+        $.ajax({
+            url: '/certificate/multiDeleteCertificateAlert',
+            success : function(result) {
+                $("#myModal").html(result);
+                $('#myModal').modal('show');
+            }
+        });
+    }
+}
+</script>

@@ -1,0 +1,372 @@
+<?php
+/*
+ * @author : Leena,Vijay 
+ * @desc : View For Listing All Tests Of Test module 
+ * @created on : 30-06-2014 
+ * --------------------------------------------- 
+ * @modified on :
+ */
+
+$session = new \Zend\Session\Container('test');
+$testId = $session->testId;
+$testName = $session->testDesc;
+$sessionTesttoQues = new \Zend\Session\Container('sessionTesttoQues');
+$sessionTesttoQues->offsetSet('testToQues',null);
+$sessionTesttoQues->offsetUnset('testToQues');
+$count = 0; 
+$testPoints = 0;
+$testContent = '';
+$data[] = 0;
+array_pop($data);
+
+foreach ($testQuestions as $data){
+// 	var_dump($data);
+// 	die;
+	$count++;
+	$testPoints += $data['quesPoints'];
+	$testContent .= $data['quesId'].",";
+}
+$title = 'Test';
+$this->headTitle ( $title );
+?>
+<div id="content">
+    <ol class="breadcrumb">
+        <li>
+            <a href="<?php echo $this->url('test', array( 'action' => 'index' ))?>">Test</a>
+        </li>
+        <li class="active"><?php echo $testName; ?></li>
+    </ol>
+    <div class="row-midlarge">
+            <a class="textnone float-right" onclick="" href="<?php echo $this->url('test');?>">
+                <input type="button" value="Back to Tests" id="<?php echo $testId ?>" class="head-btn">
+            </a>
+        <div class="test-title" id="ques-content-head">
+            <div class="float-left" id="content-head-left">
+            
+            <p><strong><span class="white"><?php echo $testName ?></span></strong> </p>
+            </div> <!-- end of content-head-left -->
+            
+            <div class="float-right" id="content-head-right">
+                
+            </div> <!-- end of content-head-right -->
+        </div> <!-- end of content-head-->
+        
+        <div id="test-quescount">
+            <h1 id="test-info" class="text-info" data-count="<?php echo $count;?>">
+            	<?php echo $count." Questions "?>
+ 				<span class='testpts'>
+ 					<span class='glyphicon glyphicon-map-marker margin-right5'></span>
+ 					<?php echo $testPoints." Points"?>
+ 				</span>
+            </h1>
+        </div><!-- end of test-quescount -->
+        <input id="testid" type="hidden" value="<?php echo $testId ;?>" >
+        <input type="hidden" value="<?php echo $testContent;?>" id="testContent">
+        
+	 
+       <a class="btn fontapply float-right margin-left20" id="anchorGenerateLink">
+            Generate Links
+        </a>
+
+        <a class="btn fontapply float-right" href="<?php echo $this->url('test', array('action' => 'testAddQues', 'id' => $testId));?>">Add questions</a>
+
+        <div id="table-content">
+                <div id="d-table-menu">
+
+            <a class="deletebtn" id="mulDeleteTestQues" data-toggle="modal" title="Delete Selected Test" href="#"></a>
+            <!-- <select id="categoryselect" class="form-control quesDisplayList" name="categoryselect">
+            <option value="" selected="selected">Display by Category</option> -->
+            <?php 
+
+                /* foreach($catList as $value) {*/
+                ?> 
+                   <!-- <option value="<?php //echo $value['name']?>"><?php //echo $value['name']?></option>-->
+            <?php
+            //}
+            ?>
+                 <!-- </select> -->
+        </div>
+            
+     <table cellpadding="0" cellspacing="0" border="0" class="LSQuestable table-bordered" id="example">
+      <thead>
+        <tr>
+            <th><input type="checkbox" id="chkAll" /></th>
+            <th>No.</th>
+            <th>Question</th>
+            <th>Points</th>
+            <th>Category</th>
+            <th>Actions</th>
+        </tr>
+       </thead>
+       
+       <tbody>
+        <?php
+            $sr = 0;
+            if($count > 0){
+            	$sr = 1;
+            } 
+
+            foreach ($testQuestions as $data) {
+             $removeCharacter = array('\r\n');
+         ?>       
+        <tr>
+            <td><input type="checkbox" name="deleteall" value="<?php echo $data['quesId']?>"></td>
+            <td><?php echo $sr?></td>
+            <td><a class="ancrQuestion" id='<?php echo $data['quesId']; ?>' href="#" data-toggle="modal" data-target="#myModal2"><?php echo str_replace($removeCharacter, "", htmlspecialchars(stripslashes($data['quesDesc']),ENT_QUOTES, 'UTF-8'));?></a></td>
+            <td><?php echo $data['quesPoints'] ?></td>
+            <td><?php echo $data['categoryDesc'] ?></td>
+            <td>
+            <a href="#" data-toggle="modal" data-target="#myModal">
+            	<div id="testQues<?php echo $data['testQuesId']?>" class="delete-btn"
+            	     onclick="btndeleteTestQues(<?php echo $data['quesId']?>)">
+            	</div>
+            </a>
+            <a href="#">
+                    <div onclick="btnViewTest(<?php echo $data['quesId'];?>)" id="<?php echo $data['quesId'];?>" class="view-btn">
+                    </div>
+             </a>
+            <div class="div-details" id="details<?php echo $data['quesId']; ?>">
+                    <div class="Quesdetails-left">
+                                        Created By : <strong><?php echo $data['createdby']; ?></strong><br>
+                                        Created On : <strong><?php $dateCr = date_create($data['quesCreatedOn']); echo date_format($dateCr,'d-M-Y H:i:s'); ?></strong><br>
+                    </div>
+                    <div class="Quesdetails-right margin-top0 ">
+                  
+                                                Updated By : <strong><?php echo $data['quesUpdatedBy']!=""?$data['updatedby']:'None'; ?></strong><br>
+                                                Updated On : <strong><?php $dateUp = date_create($data['quesUpdatedOn']); echo $data['quesUpdatedBy']!=""?date_format($dateUp,'d-M-Y H:i:s'):' -- '; ?></strong><br>
+                    </div>
+                </div> <!-- end of div-details -->
+            </td>        
+        </tr>
+        <?php 
+        $sr++;
+            }
+        ?>
+    </tbody>
+</table>
+</div>  <!-- end of table content-->
+</div>
+</div>
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+            </div> 
+
+<!-- Modal -->
+	<div class="modal fade" id="myModal2" tabindex="-1" role="dialog"
+		aria-labelledby="myModalLabel" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal"
+						aria-hidden="true">&times;</button>
+					<h4 class="modal-title" id="myModalLabel">Question Details</h4>
+				</div>
+				<div id="modal-body2" class="modal-body">
+					 
+				</div>
+			</div>
+		</div>
+	</div>
+<script type="text/javascript">
+<!--
+
+
+/* Formating function for row details */
+function fnFormatDetails ( oTable, nTr, ele )
+{
+    var elemnt = "#details"+ele;
+    var aData = oTable.fnGetData( nTr );
+    var sOut    =  $(elemnt).html();
+    return sOut;
+}
+
+
+
+/* API method to get paging information */
+$.fn.dataTableExt.oApi.fnPagingInfo = function ( oSettings )
+{
+return {
+"iStart":         oSettings._iDisplayStart,
+"iEnd":           oSettings.fnDisplayEnd(),
+"iLength":        oSettings._iDisplayLength,
+"iTotal":         oSettings.fnRecordsTotal(),
+"iFilteredTotal": oSettings.fnRecordsDisplay(),
+"iPage":          oSettings._iDisplayLength === -1 ?
+    0 : Math.ceil( oSettings._iDisplayStart / oSettings._iDisplayLength ),
+"iTotalPages":    oSettings._iDisplayLength === -1 ?
+    0 : Math.ceil( oSettings.fnRecordsDisplay() / oSettings._iDisplayLength )
+};
+}
+
+/* Bootstrap style pagination control */
+$.extend( $.fn.dataTableExt.oPagination, {
+"bootstrap": {
+"fnInit": function( oSettings, nPaging, fnDraw ) {
+    var oLang = oSettings.oLanguage.oPaginate;
+    var fnClickHandler = function ( e ) {
+        e.preventDefault();
+        if ( oSettings.oApi._fnPageChange(oSettings, e.data.action) ) {
+            fnDraw( oSettings );
+        }
+    };
+
+    $(nPaging).addClass('pagination').append(
+        '<ul>'+
+            '<li class="prev disabled"><a href="#">&larr; '+oLang.sPrevious+'</a></li>'+
+            '<li class="next disabled"><a href="#">'+oLang.sNext+' &rarr; </a></li>'+
+        '</ul>'
+    );
+    var els = $('a', nPaging);
+    $(els[0]).bind( 'click.DT', { action: "previous" }, fnClickHandler );
+    $(els[1]).bind( 'click.DT', { action: "next" }, fnClickHandler );
+},
+
+"fnUpdate": function ( oSettings, fnDraw ) {
+    var iListLength = 5;
+    var oPaging = oSettings.oInstance.fnPagingInfo();
+    var an = oSettings.aanFeatures.p;
+    var i, j, sClass, iStart, iEnd, iHalf=Math.floor(iListLength/2);
+
+    if ( oPaging.iTotalPages < iListLength) {
+        iStart = 1;
+        iEnd = oPaging.iTotalPages;
+    }
+    else if ( oPaging.iPage <= iHalf ) {
+        iStart = 1;
+        iEnd = iListLength;
+    } else if ( oPaging.iPage >= (oPaging.iTotalPages-iHalf) ) {
+        iStart = oPaging.iTotalPages - iListLength + 1;
+        iEnd = oPaging.iTotalPages;
+    } else {
+        iStart = oPaging.iPage - iHalf + 1;
+        iEnd = iStart + iListLength - 1;
+    }
+
+    for ( i=0, iLen=an.length ; i<iLen ; i++ ) {
+        // Remove the middle elements
+        $('li:gt(0)', an[i]).filter(':not(:last)').remove();
+
+        // Add the new list items and their event handlers
+        for ( j=iStart ; j<=iEnd ; j++ ) {
+            sClass = (j==oPaging.iPage+1) ? 'class="active"' : '';
+            $('<li '+sClass+'><a href="#">'+j+'</a></li>')
+                .insertBefore( $('li:last', an[i])[0] )
+                .bind('click', function (e) {
+                    e.preventDefault();
+                    oSettings._iDisplayStart = (parseInt($('a', this).text(),10)-1) * oPaging.iLength;
+                    fnDraw( oSettings );
+                } );
+        }
+
+        // Add / remove disabled classes from the static elements
+        if ( oPaging.iPage === 0 ) {
+            $('li:first', an[i]).addClass('disabled');
+        } else {
+            $('li:first', an[i]).removeClass('disabled');
+        }
+
+        if ( oPaging.iPage === oPaging.iTotalPages-1 || oPaging.iTotalPages === 0 ) {
+            $('li:last', an[i]).addClass('disabled');
+        } else {
+            $('li:last', an[i]).removeClass('disabled');
+        }
+    }
+}
+}
+} );
+
+$(document).ready(function() {
+
+    
+var oTable = $('#example').dataTable( {
+"bLengthChange": false,
+"bFilter": true,
+"bInfo": true,
+"bAutoWidth": false,
+"sPaginationType": "bootstrap",
+"aoColumnDefs": [   //Initialse DataTables, with no sorting on the 'checkbox' column
+    { "bSortable": false, "aTargets": [ 0 ] }
+],
+"aaSorting": [[1, 'asc']]
+} );
+/* Add event listener for opening and closing details
+* Note that the indicator for showing which row is open is not controlled by DataTables,
+* rather it is done here
+*/
+
+
+
+//used to send test id to the viewTest function in test controller
+$(document).on('click','.view-btn, .hide-btn',function () {
+
+ if ($(this).attr("class") == "view-btn") {
+
+        $(this).removeClass("view-btn");
+        $(this).addClass("hide-btn");
+
+}
+else{
+    $(this).removeClass("hide-btn");
+    $(this).addClass("view-btn");
+}
+
+ var ele = $(this).attr('id');
+var nTr = $(this).parents('tr')[0];
+if ( oTable.fnIsOpen(nTr) )
+{
+    /* This row is already open - close it */
+    this.src = "../examples_support/details_open.png";
+    oTable.fnClose( nTr );
+}
+else
+{
+    /* Open this row */
+    this.src = "../examples_support/details_close.png";
+    oTable.fnOpen( nTr, fnFormatDetails(oTable, nTr,ele), 'details' );
+}
+});
+
+});
+
+$.fn.dataTableExt.oStdClasses["sFilter"] = "Dfilter";
+$('#example_wrapper').css("margin-top","50px");
+
+
+
+function addClassCurrent(element)
+{
+var el="#ico"+element;
+$(el).addClass("current");
+}
+
+function removeClassCurrent(element)
+{
+var el="#ico"+element;
+$(el).removeClass("current");
+}
+$('#footer').css("padding-top","30px");
+
+$(document).ready(function() {
+
+    $('#chkAll').click (function () {
+        $(':checkbox[name=deleteall]').prop('checked', this.checked);
+    }); 
+
+    $('#anchorGenerateLink').on('click', function(){
+        var testId, numQuestionsInTest;
+        numQuestionsInTest = $("#test-quescount  h1").data('count');
+        testId = $("#testid").val();
+        if(numQuestionsInTest != 0) {
+            window.location.assign("/test/generateTestLink/"+testId);
+        } else {
+         alert ("no ques available"); //error popup message for no question in test
+        }
+    });
+
+});
+</script>
+
+
+
+
+    
+

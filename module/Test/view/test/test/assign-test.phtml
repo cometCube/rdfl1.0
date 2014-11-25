@@ -1,0 +1,318 @@
+<?php
+$session = new \Zend\Session\Container('test');
+$testId = $session->testId;
+$testDesc = $session->testDesc;
+
+$session = new \Zend\Session\Container('users');
+$userId = $session->clientId;
+
+$linkName = "";
+$linkId   = "";
+$host     = "";
+$countLinks = "";
+if(isset($arrData) && !empty($arrData)) {
+    $linkName = $arrData['linkDetails']['name'];
+    $linkId = $arrData['linkDetails']['id'];
+    $host   = $arrData['linkDetails']['host'];
+    if(isset($arrData['recentLink']) && !empty($arrData['recentLink'])){
+        $countLinks = count($arrData['recentLink']);
+    }
+}
+?>
+    <div id="content">
+    <ol class="breadcrumb">
+    <li>
+        <a href="<?php echo $this->url('test', array( 'action' => 'index' ))?>">Test</a>
+    </li>
+    <li>
+        <a href="<?php echo $this->url('test', array('action' => 'viewTest', 'id' => $testId));?>"><?php echo $testDesc;?></a>
+    </li>
+    <li class="active">Assign Test</li>
+</ol>
+        <div class="row-mid">
+            <a class="textnone float-right" onclick="" href="<?php echo $this->url('test',array('action' => 'generateTestLink', 'id' => $testId));?>">
+                <input type="button" value="Back to Test" id="<?php echo $testId ?>" class="head-btn">
+            </a>
+            <div id="main-container">
+                <div id="content-head">
+                    <div class="test-title" id="ques-content-head">
+                        <div class="float-left" id="content-head-left">
+                            <p><strong><span class="white"><?php echo $linkName; ?></span> : Assign</strong> </p>
+                        </div> <!-- end of content-head-left -->
+
+                        <div class="float-right" id="content-head-right">
+
+                        </div> <!-- end of content-head-right -->
+                    </div> <!-- end of content-head-->
+                </div>
+                <!-- end of content-head-->
+
+                <div>
+                    <div class="float-left" id="content-head-left margin-left0">
+                        <div class="row-mid div-align-center">
+
+
+                            <div class="row-mid">
+                                <div class="review-green">
+                                    <p class="ptextlrg">Your Test is ready to give. </p>
+
+                                    <p class="ptextlrg">You can assign the test to your students now. Click
+                                        <span class="greenclick text-success" href="#link1" data-parent="#review-green" data-toggle="collapse">here</span><span > to view the link's history. </span></p>
+                                </div>
+
+                                <div id="link1" class="panel-collapse collapse" >
+                                    <div class="linklist-header">
+                                        <ul class="links-head">
+                                            <li>Links</li>
+                                            <li>From</li>
+                                            <li>Until</li>
+                                        </ul>
+                                        <ul>
+                                            <?php
+                                            for($i=0;$i<$countLinks;$i++){?>
+                                                <li><span class="link-link"><?php echo $arrData['recentLink'][$i]['linkUrl']; ?>
+                                  </span><span class="link-dateFrom"><?php $date=date_create($arrData['recentLink'][$i]['showuntill']); echo date_format($date,'Y-m-d');?></span>
+                                                    <span class="link-dateUntil"><?php $date=date_create($arrData['recentLink'][$i]['showfrom']); echo date_format($date,'Y-m-d');?></span></li>
+                                            <?php }
+                                            ?>
+
+                                        </ul>
+                                    </div>
+                                </div>
+
+                            </div>
+
+                            <div class="clear-both">
+
+                                <div class="row-mid">
+                                    <fieldset class="review-grey">
+                                        <form id="frmLinkAssignDate">
+
+
+                                            <div class="content">
+                                                <p class="ptextlrg">Show from</p>
+                                                <div class='input-group date fontapply'>
+                                                    <div class='col-md-5'>
+                                                        <div class="form-group">
+                                                            <div class='input-group date' id='datetimepicker8'>
+                                                                <input type='text' id= "datetimepicker8Value" disabled="disabled" class="form-control margin-top0" placeholder="mm/dd/yyyy" />
+                                    <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span>
+                                    </span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class='col-md-5'>
+                                                        <div class="form-group">
+                                                            <div class='input-group date' id='datetimepicker9'>
+                                                                <input type='text' id= "datetimepicker9Value" disabled="disabled" class="form-control margin-top0" maxlength=7 placeholder="Hr:Mins AM/PM" />
+                                    <span class="input-group-addon"><span class="glyphicon glyphicon-time"></span>
+                                    </span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div> <!-- end of input-group date-->
+                                                <p></p>
+                                                <p class="ptextlrg">Show Until</p>
+                                                <div class='input-group date'>
+                                                    <div class='col-md-5'>
+                                                        <div class="form-group">
+                                                            <div class='input-group date' id='datetimepicker10'>
+                                                                <input type='text' id= "datetimepicker10Value" disabled="disabled" class="form-control margin-top0" placeholder="mm/dd/yyyy" />
+                                    <span class="input-group-addon "><span class="glyphicon glyphicon-calendar"></span>
+                                    </span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class='col-md-5'>
+                                                        <div class="form-group">
+                                                            <div class='input-group date' id='datetimepicker11'>
+                                                                <input type='text' id="datetimepicker11Value" disabled="disabled" class="form-control margin-top0" placeholder="Hr:Mins AM/PM" />
+                                    <span class="input-group-addon"><span class="glyphicon glyphicon-time"></span>
+                                    </span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div> <!-- end of input-group date-->
+                                                <p></p>
+                                            </div> <!--  end of content -->
+                                            <hr>
+
+                                            <p><strong>Assign and Email link to Users:</strong></p>
+                                            <p class="hint-text">Please provide comma speperated email ids of users</p>
+                                            <input type="hidden" value="8" name="linkid">
+                                            <textarea placeholder="for ex. abc@osscube.com, cde@osscube.com," id="review-userstext" class="float-left" name="users"></textarea>
+
+                                            <input type="button" id="btnFinish" class="btn margin-left20" value="Finish">
+                                            <input type="button" id="btnPreview" class="btn" value="Preview Test">
+
+                                        </form>
+                                    </fieldset>
+                                </div>
+
+                            </div>
+
+
+                            <!-- Modal -->
+                            <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                            </div>
+
+                        </div>
+                        <!-- end of main container -->
+                    </div>
+                    <!-- end of row-large -->
+                </div>
+                <!-- end of content -->
+
+
+            </div>
+        </div>
+        <!-- end of content -->
+<script type="text/javascript">
+    $(function () {
+        var today = new Date();
+        $('#datetimepicker8').datetimepicker({
+
+            pickTime: false,
+            minDate:today,
+
+        });
+        $('#datetimepicker9').datetimepicker({
+            pickDate: false
+        });
+
+        $("#datetimepicker8").on("dp.change",function (e) {
+            if(validateDateFormat('datetimepicker8Value') === false){
+                alert("Invalid date format");
+            }
+        });
+
+        $('#datetimepicker8Value,#datetimepicker10Value').blur(function(){
+
+            if(validateDateFormat('datetimepicker8Value') === false || validateDateFormat('datetimepicker10Value') === false){
+                alert("Invalid date format");
+                $('#datetimepicker8Value').val("");
+                $('#datetimepicker10Value').val("");
+            }
+        });
+
+        $('#datetimepicker9Value,#datetimepicker11Value').blur(function(){
+
+            if(validateTimeFormat('datetimepicker9Value') === false || validateTimeFormat('datetimepicker11Value') === false){
+                alert("Invalid date format");
+                $('#datetimepicker9Value').val("");
+                $('#datetimepicker11Value').val("");
+            }
+        });
+
+        //on click of finish button....
+        $('#btnFinish').on("click",function(event){
+            event.preventDefault();
+
+            var date8Value = $('#datetimepicker8Value').val();
+            var date10Value = $('#datetimepicker10Value').val();
+            var date9Value = $('#datetimepicker9Value').val();
+            var date11Value = $('#datetimepicker11Value').val();
+
+            if(!date8Value || !date10Value) {
+                alert("Please enter date");
+
+            } else if(!date9Value || !date11Value) {
+                alert("Please enter time");
+
+            } else if(date8Value == date10Value){
+                var pm9 = date9Value.substring(6,8);
+                var pm11 = date11Value.substring(6,8);
+                var time9 = date9Value.substring(0,5);
+                var time11 = date11Value.substring(0,5);
+
+                if(pm9 == 'PM' && pm11 == 'AM') {
+                    alert("invalid time");
+
+                } else {
+                    createLink();
+                }
+            }
+
+            else {
+                createLink();
+            }
+        });//end of finish button click;
+
+        $('#datetimepicker10').datetimepicker({
+            pickTime: false,
+            minDate:today,
+
+        });
+
+        $('#datetimepicker11').datetimepicker({
+            pickDate: false
+        });
+
+        $("#datetimepicker8").on("dp.hide",function (e) {
+            $('#datetimepicker10').data("DateTimePicker").setMinDate(e.date);
+            $('#datetimepicker10Value').val($('#datetimepicker8Value').val());
+            $('#datetimepicker8').data("DateTimePicker").setMinDate({ defaultDate: -1 });
+        });
+
+        $("#datetimepicker10").on("dp.hide",function (e) {
+            $('#datetimepicker8').data("DateTimePicker").setMinDate({ defaultDate: -1 });
+
+        });
+
+    $('#footer').css("padding-top","30px");
+
+    $('#btnPreview').click(function(){
+        var path="/student/quiz/<?php echo $userId;?>/<?php echo $linkId; ?>/preview";
+        window.open(path,'_blank');
+    });
+
+    $(document).on('click', '#btnOk',function(){
+            window.location.reload();
+    });
+
+
+    function createLink()
+    {
+        var from = $('#datetimepicker8Value').val()+" "+$('#datetimepicker9Value').val();
+        var to = $('#datetimepicker10Value').val()+" "+$('#datetimepicker11Value').val();
+        var linkId = <?php echo $linkId; ?>;
+        var host = <?php echo $host  ?>;
+        var emails = $("#review-userstext").val();
+
+        $.ajax({
+            type: "POST",
+            url: '/test/generateLinkCode',     
+            data: {linkId:linkId, host:host, from:from, to:to, emails:emails},
+            dataType: 'html',            
+            success: function(data) {
+                if(data) {
+                    var url = $(data).find("#txtLink").val();
+                    $('#myModal').html(data);
+                    $('#myModal').modal('show');
+                    if(emails) {
+                        $.ajax({
+                            type: "POST",
+                            url: "/test/sendEmails",     
+                            data: {url:url, emails:emails},
+                            dataType: 'json',
+                            beforeSend: function() {
+                                $("#loading").show();
+                                $("#btnOk").hide();
+                            },
+                            success: function(data) {
+                                $("#loading").hide();
+                                $("#btnOk").show();
+                                $("#pln-small").html("Mail sent to the recipient...");
+                                if(!data.status) {
+                                    alert("email could not be sent...")
+                                }
+                            },
+                        });
+                    }
+                }
+            },
+        });    
+    }
+
+});
+</script>

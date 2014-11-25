@@ -1,0 +1,224 @@
+<div id="content">
+	
+	<!--@@@@@=======>//form for sending mail...pass id equals to 1 to show<===========@@@@@-->
+  	<?php
+    	$form->prepare();
+    	echo $this->form()->openTag($form);
+  	?>
+  	<div id="certificate-details">
+    	<?php
+      		echo $this->formLabel($form->get('testName'));
+      		echo $this->formElement($form->get('testName'));
+      		echo $this->formLabel($form->get('title'));
+      		echo $this->formElement($form->get('title'));
+      		echo $this->formHidden($form->get('assigned_to'));
+      		echo $this->formHidden($form->get('email'));
+      	?>
+      	<div id='errorsDiv'></div>
+      	<?php 
+      		echo $this->formLabel($form->get('assignedTo'));
+      		echo $this->formElement($form->get('assignedTo'));
+    	?>
+    	<div id="noTestTaker" class="alert alert-danger" role="alert" ></div>
+  </div>
+  <?php
+    echo $this->form ()->closeTag ();
+  ?>
+ 
+ 
+	<div id="wizard1" class="wizard">Step 1: Select Layout<br> 
+    	<div class="certificateFormDiv">
+      		<div id="certificate1" class="certificate-layoutDiv"></div>
+      		<div id="certificate2" class="certificate-layoutDiv"></div>
+      		<div id="certificate3" class="certificate-layoutDiv"></div>
+    	</div>
+    	<br>
+  	</div> <!-- end of wizard 1 -->
+
+	<div id="wizard2" class="wizard">Step 2: Adjust Content of Certificate
+    	<br> 
+    	<div id="certificatemain"> 
+      		<label id="certiTitle">Title Goes Here</label>
+      		<label id="certiAssignTo">First Name </label> 
+      		<div class="certificate-container">
+      			<span id="student-name">
+      			<?php  
+      				$current = array();
+      				$current = current($assignedToData);
+      				if(!empty($current['name']) && isset($current['name'])) {
+      					echo ucwords($current['name']);
+      				}
+      			?>
+      			</span> has scored 
+      			<span id="percentage">
+      				<?php
+      				if(!empty($current['percentage']) && isset($current['percentage'])) { 
+      					echo $current['percentage'];
+					}
+					?>
+      			</span> % in the 
+      			<span id="test-name">
+      				<?php 
+      					if(!empty($current['testName']) && isset($current['testName'])) {
+							echo $current['testName'];
+						}
+					?>
+      			</span>
+      		<br>
+      		and successfully passed the test conducted by Osscube solutions
+      		<br>
+      		on <span id="test-date">
+      			<?php 
+      				if(!empty($current['startDate']) && isset($current['startDate'])) {
+						echo $current['startDate'];
+					}
+				?>.
+      			</span>
+      		</div> 
+    	</div>
+    	<span class="txtNotice">Note: Maximum file size upto 20MB.</span>
+    </div><!-- end of wizard 2 -->
+
+  	<div id="wizard3" class="wizard">Step 3: Preview & Email Certificate. 
+    	<div class="certificate-emailDiv">
+      		<?php 
+      			echo $this->FormElement($form->get('emailId'));
+      			echo $this->formsubmit ( $form->get ( 'submit' ) );
+
+      			
+    			$form->setAttribute('action', $this->url('certificate', array(
+      				'action' => 'generateCertificate',
+      				'id'     => 0,
+    			)));
+				$form->setAttribute('class','float-right');
+				$form->setAttribute('target','_blank');
+    			$form->prepare();
+    			echo $this->form()->openTag($form); 
+    			echo $this->formHidden($form->get('titlepre'));
+    			echo $this->formHidden($form->get('assigned_topre'));
+   	 			echo $this->formHidden($form->get('certiImage'));
+   	 			echo $this->formHidden($form->get('percenatge_pre'));
+   	 			echo $this->formHidden($form->get('date_pre'));
+  			?>
+  			<button  type = 'submit'  class="btn"  id="btnFileUpload" >Preview Certificate</button>
+  			<?php
+    			echo $this->form ()->closeTag ();
+  			?> 
+  		</div>   
+    	<span class="txtNotice"> Note: Category not available in list will be created automatically</span>
+    </div>
+   
+
+	<!-- Modal -->
+	<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  		<div class="modal-dialog">
+    		<div class="modal-content">
+      			<div class="modal-header">
+        			<h4 class="modal-title" id="myModalLabel">
+        				<span class="glyphicon glyphicon-time"></span>
+        				Please Wait
+        			</h4>
+      			</div>
+      			<div class="modal-body">
+      				<div>
+         				<p class="text-info">
+							Sending Mail to the recipient, Please Wait....
+							<img id="loadingImageReg" alt="Loading" src="/img/loading.gif">
+						</p> 
+					</div>
+      			</div>
+    		</div>
+  		</div>
+	</div>
+    
+
+</div> <!--end of content -->
+  
+<!--  scripts--> 
+<?php  $this->headScript()
+        	->prependFile($this->basePath() . '/js/certificate.js');
+?>
+
+<script type="text/javascript"> 
+$('#footer').css("padding-top","30px");
+	
+	$('.certificate-layoutDiv').click(function(){
+		var certival = $(this).attr('id');
+		$('#certificatemain').css("background","url('../img/"+certival+".jpg') no-repeat scroll 0 0 rgba(0, 0, 0, 0)").css("background-size","cover");
+	$('#certiImage').val(certival);
+});
+
+$('#errorDiv').hide();
+	
+$("#submitCertificate").click(function(e){
+    e.preventDefault();
+    
+    var title = '',assignedTo, emailId, fileName,certiImage; 
+    title = $('#title').val();
+    assigned = $("#assignedTo option:selected").text();
+    assignedTo = assigned.substring(0, assigned.indexOf('(') - 1);
+	certiImage = $('#certiImage').val();
+    emailId = $('#certificate-email').val();
+    testDate = $('#test-date').html().trim();
+    percentage = $('#percentage').html().trim();
+     
+    $('#certificate-email input:hidden').val(emailId);
+
+	if(title.length != 0) {
+    	$.ajax({
+        	type: "POST",
+        	data: $('#certificate').serialize(),
+        	url: '/certificate/createNewCertificate',
+        	dataType: 'json',
+        	success:function(data){
+  
+          		// if certificate data is saved in db then generate the certificate and save
+				if(data.status == 1) {
+					
+            		fileName = 'certificate' + data.lastInsertId + '.pdf';
+						
+            		$.ajax({
+                		type: "POST",
+              			data: {titlepre: title,certiImage: certiImage, assigned_topre: assignedTo, 
+                  				fileName: fileName, percenatge_pre: percentage, date_pre: testDate},
+              			url: '/certificate/generateCertificate/1',
+              			dataType: '',
+              			success:function(data){
+                			if(data && emailId) {
+            					
+                  				$.ajax({
+                    				type: "POST",
+                    				data: {emailId: emailId, fileName: fileName},
+                    				url: '/certificate/sendEmail',
+                    				dataType: '',
+                    				beforeSend:function(){
+                        				$('#myModal').modal('show');
+                    				},
+                    				success:function(data){
+                      					if(data.status) {
+                    	  					$('#myModal').modal('hide');
+                      					}
+                      					else {
+                      					}
+                      					window.location.href = "/certificate";
+                    				},  
+                  				});
+								
+                			} // end if
+                			else {
+                				window.location.href = "/certificate";
+                			}
+              			},  
+            		});
+				
+				}// end if
+        	},  	
+      	});
+	} else {
+		$('#errorsDiv').show();
+		$('#errorsDiv').html('<span class="margin-left175" style="color: red;">Title can not be empty.</span>');
+	}
+	
+});
+
+</script>

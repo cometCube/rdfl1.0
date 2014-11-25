@@ -1,0 +1,944 @@
+<?php
+$testName ="";
+$linkName ="";
+$testId = "";
+$totalQue = "";
+$testContent = "";
+$linkDetails = "";
+
+if(isset($linkAndTestData) && !empty($linkAndTestData)) {
+    $testName            = $linkAndTestData['testDetails']['name'];
+    $testId              = $linkAndTestData['testDetails']['id'];
+    $totalQue            = count($linkAndTestData['testContent']);
+    $testContent            = $linkAndTestData['testContent'];
+    $linkName            = $testName." -link/";
+    if(isset($linkAndTestData['linkDetails']) && !empty($linkAndTestData['linkDetails']) && isset($linkAndTestData['linkSettingsDetails']) && !empty($linkAndTestData['linkSettingsDetails'])) {
+        $linkDetails         = $linkAndTestData['linkDetails']; 
+        $linkSettingsDetails = $linkAndTestData['linkSettingsDetails'];
+    }
+}
+$testQuestionquesIds = array();
+foreach($testContent as $data){
+	$testQuestionquesIds[] = $data['quesId'];
+} 
+
+$testQuestionquesIds = implode(",",$testQuestionquesIds);
+
+?>
+<ol class="breadcrumb">
+	<li><a
+		href="<?php echo $this->url('test', array( 'action' => 'index' ))?>">Test</a>
+	</li>
+	<li><a
+		href="<?php echo $this->url('test', array('action' => 'viewTest', 'id' => $testId));?>"><?php echo $testName;?></a>
+	</li>
+	<li class="active">Generate Link</li>
+</ol>
+<div class="row-mid">
+	<a class="textnone float-right" onclick=""
+		href="<?php echo $this->url('test',array('action' => 'viewTest', 'id' => $testId));?>">
+		<input type="button" value="Back to Test" id="<?php echo $testId ?>"
+		class="head-btn">
+	</a>
+	<div id="main-container">
+		<div id="content-head">
+			<div class="test-title" id="ques-content-head">
+				<div class="float-left" id="content-head-left">
+					<p>
+						<strong> <span class="white">
+                                        <?php echo $testName; ?>
+                                    </span> : Links
+						</strong>
+					</p>
+				</div>
+				<!-- end of content-head-left -->
+				<div class="float-right" id="content-head-right"></div>
+				<!-- end of content-head-right -->
+			</div>
+			<!-- end of test title-->
+		</div>
+		<!-- end of content head -->
+
+		<div id="content-head">
+			<div class="float-left" id="content-head-left margin-left0">
+				<div class="row-midlarge div-align-center">
+    <?php
+    $i=-1;
+        if(isset($linkSettingsDetails) && !empty($linkSettingsDetails)) {
+    ?>
+    <div class="row-midlarge">
+						<div class="review-green ">
+							<p class="ptextlrg">
+								Your Test is ready to give. You can review the <span
+									class="review-highlight">settings</span> below.
+							</p>
+							<p class="ptextlrg">
+								You can edit these settings at any time by going to the <span
+									class="review-highlight">tests</span> section, then <span
+									class="text-success">links -&gt;settings</span>.
+							</p>
+						</div>
+					</div>
+					<!-- >>>>>>>>>>>>>>>>>modal to display delete link popup<<<<<<<<<<<<<<<<<<<<<< -->
+								<div class="modal fade" id="myModal" tabindex="-1"
+									role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+									  <!-- <div class="modal-dialog">
+										<div class="modal-content">
+											<div class="modal-header">
+												<button type="button" class="close" data-dismiss="modal"
+													aria-hidden="true">&times;</button>
+												<h4 class="modal-title" id="myModalLabel">Question Details</h4>
+											</div>
+											<div id="modal-body2" class="modal-body"></div>
+										</div>
+									</div>  -->
+								</div>
+					<ol class="linksList">
+        <?php
+        foreach ($linkSettingsDetails as $settings) {
+            $i++;
+            $str = '<li>
+                     <div id="link'.$i.'tab">
+
+                    <div class="panel-heading"><p class="bg-info txt-info">'.$linkDetails[$i]['name']
+                .'<a class="linkbtn" data-toggle="collapse" data-parent="#link'.$i.'tab" href="#link'.$i.'">Review</a>';
+            $str .= '<a id=deleteTestLink'.$linkDetails[$i]['id'].' data-toggle="modal" class="linkbtn" onclick="deleteTestLink('.$linkDetails[$i]['id'].')" data-quescount='.$totalQue.'>Delete</a>' ;
+            if($settings['availability'] == 1) {
+                $str .= '<a href='.$this->url('test', array('action' => 'assignTest', 'id' => $linkDetails[$i]['id'])).' class="linkbtn">Assign</a>' ;
+            }
+            $str .='</p>
+                    </div>
+
+                         <div id="link'.$i.'" class="panel-collapse collapse">
+
+                        <div class="linkset-header">
+                        <span class="margin-right15">Availability</span><span class="margin-right15">-</span>
+                        <label class="display-none">';
+            if($settings['availability'] == 1) {
+                $str .= 'Available';
+            } else {
+                $str .= 'Unavailable';
+            }
+            $str .= '</label>
+                        </div>
+
+                         <div class="linkset-header">
+                            <span class="margin-right15">Attempts</span><span class="margin-right15">-</span>
+                            <label class="display-none">'.$settings['attempts'].' attempt allowed</label>
+                        </div>
+
+                        <div class="linkset-header">
+                        <span class="margin-right15">Restrictions</span><span class="margin-right15">-</span>
+                         <label class="display-none">';
+            if($settings['password']){
+                $str .= $settings['password'];
+            } else {
+                $str .= 'No password';
+            }
+            $str .= '</label>
+                        </div>
+
+                        <div class="linkset-header">
+                        <span class="margin-right15">User Info</span>
+                        <span class="margin-right15">-</span><label class="display-none">Email';
+            if($settings['firstname']==1){
+            	$str .= ',First Name';
+            }
+            $str .= '';
+            if($settings['lastname']==1){
+            	$str .= '& Last Name';
+            }
+            $str .= '</label>
+                        </div>
+
+                        <div class="linkset-header">
+                        <span class="margin-right15">Instructions</span>
+                        <span class="margin-right15">-</span>
+                        <label class="display-none">';
+            if($settings['custom_instructions_id'] > 1){
+                $str .= 'Custom';
+            } else {
+                $str .= 'Default';
+            }
+            $str .= '</label>
+                        </div>
+                        <div class="linkset-header"> Time Limit  -
+                        <label class="margin-right15">'.$settings['time_limit'].' mins</label></div>
+
+                        <div class="linkset-header">
+                        Save Result  -  <label class="display-none">';
+            if($settings['save_result']==1){
+            	$str .= 'Yes';
+            }else{
+            	$str .= 'No';
+            }
+            $str .= '</label></div>
+
+                        <div class="linkset-header">
+                        Resume Later - <label class="display-none">';
+            if($settings['resume_later']==1){
+            	$str .= 'Yes';
+            }else{
+            	$str .= 'No';
+            }
+            $str .= '</label> </div>
+
+                        <div class="linkset-header">
+                          Total Questions - <label class="display-none">'.$settings['total_question'].' </label></div>
+
+                        <div class="linkset-header">
+                          Display - <label class="display-none">'.$settings['display_questions'].' Question(s) Per Page</label></div>
+
+                        <div class="linkset-header"> Randomize - <label>';
+            if($settings['randomize']){
+                $str .= 'yes';
+            } else {
+                $str .= 'no';
+            }
+            $str .= '</label>
+                        </div>
+
+                        <div class="linkset-header"> Result Page - </div>
+
+                        <div class="linkset-header">Passing Marks-
+                        <label class="display-none">'.$settings['passing_marks'].'%</label></div>
+
+                        <div class="linkset-header" class="panel-heading">Email Result - <label>';
+            if($settings['email_result']==1){
+                $str .= 'No';
+            }
+            if($settings['email_result']==2){
+                $str .= 'Email Score only';
+            }
+            if($settings['email_result']==3){
+                $str .= 'Email score & incorrectly answered questions only';
+            }
+            if($settings['email_result']==4){
+                $str .= 'Email score and all answered questions';
+            }
+            $str .= '</label>
+                        </div>
+                        </div>
+                        </div>
+                 </li>';
+            echo $str;
+        }
+        ?>
+    </ol>
+<?php } ?>
+<hr>
+<?php
+$form = $this->form;
+$form->setAttribute('action', $this->url('test', array(
+    'action' => 'generateTestLink',
+    'id'     => $testId,
+    'param'  => $totalQue)));
+$form->setAttribute('id', 'frmNewLink');
+$form->prepare();
+echo $this->form()->openTag($form);
+?>
+<div id="link-head" class="panel-group">
+						<div class="panel">
+							<h3 class="newLinktxt">New Link Settings</h3>
+							<p class="fontapply">
+								<strong>Link Name :</strong> <input type="text"
+									value="<?php echo $linkName; ?>" class="textLarge form-control"
+									name="linkName" id="linkName"> <a data-toggle="collapse"
+									data-parent="#accordion" href="#collapseMain" class="btn">Settings</a>
+							</p>
+							<input type="hidden" value="<?php echo $testId; ?>" name="testId">
+							<input type="hidden" value="<?php echo $testQuestionquesIds; ?>" name="testQuestions">
+						</div>
+						<div id="collapseMain" class="panel-collapse collapse">
+							<div class="panel-body ">
+								<h2 class="linkTitle">Test Access</h2>
+
+								<!-- >>>>>>>>>settings box - Availability<<<<<<<<<<<< -->
+								<div class="panel-group settings-box">
+									<div class="panel panel-default">
+										<a data-toggle="collapse" data-parent="#accordion"
+											href="#collapseOne">
+											<div class="panel-heading settings-header">
+												<span class="margin-right15">Availability</span><span
+													class="margin-right15">-</span> <label id="lbl-avl"
+													class="display-none">Available</label> <span
+													class="downarrow-img"><img
+													src='<?php echo $this->basepath()?>/img/downarrow-small.png'></span>
+											</div> <!-- end of settings-header -->
+										</a>
+
+										<div id="collapseOne" class="panel-collapse collapse">
+											<div class="panel-body settings-content">
+
+												<div class="content">
+													<span class="margin-right15">Currently</span>
+													<p></p>
+													<input type="radio" id="opt1-avl" checked="" value="1"
+														name="availability"> <label for="opt1-avl"> Available </label>
+
+													<input type="radio" id="opt2-avl" value="0"
+														name="availability" class="margin-left85"> <label
+														for="opt2-avl">Unavailable </label>
+												</div>
+												<!-- end of content1 -->
+
+											</div>
+											<!-- end of settings-content -->
+										</div>
+									</div>
+								</div>
+								<!-- end of settingsBox -->
+								<!-- >>>>>>>>>END OF settings box - Availability<<<<<<<<<<<< -->
+
+								<!-- >>>>>>>>>settings box - Attempts<<<<<<<<<<<< -->
+								<div class="panel-group settings-box">
+									<div class="panel panel-default">
+										<a data-toggle="collapse" data-parent="#accordion"
+											href="#collapseTwo">
+											<div class="panel-heading settings-header">
+												<span class="margin-right15">Attempts</span><span
+													class="margin-right15">-</span> <label class="display-none"><label
+													id="lbl-atm">One</label> attempt allowed</label> <span
+													class="downarrow-img"><img
+													src='<?php echo $this->basepath()?>/img/downarrow-small.png'></span>
+											</div> <!-- end of settings-header -->
+										</a>
+
+										<div id="collapseTwo" class="panel-collapse collapse">
+											<div class="panel-body settings-content">
+
+												<div class="content">
+													<p class="head">Limit the number of attempts allowed</p>
+													<span>Attempts</span>
+													<ol class="list-styleNone">
+														<li><input type="radio" id="opt1-atm" checked="" value="1"
+															name="attempts" class="margin-left20"> <label
+															for="opt1-atm">One</label></li>
+														<li><input type="radio" id="opt2-atm" value=""
+															name="attempts" class="margin-left20"> <label
+															for="opt2-atm">multiple</label><div id="multiAttempt" style="display: none;float: right; margin-right: 205px;margin-top:1px">
+															<input type="text" id="txtmultiAttempt" value="" placeholder="Atmost 10 Attempts"/></div></li>
+														<li><input type="radio" id="opt3-atm" value="0"
+															name="attempts" class="margin-left20"> <label
+															for="opt3-atm">Unlimited</label></li>
+													</ol>
+												</div>
+												<!-- end of content1 -->
+											</div>
+											<!-- end of settings-content -->
+										</div>
+									</div>
+								</div>
+								<!-- end of settings Box -->
+								<!-- >>>>>>>>>END OF setting box - Attempts<<<<<<<<<<<< -->
+
+								<!-- >>>>>>>>>settings box - Restrictions<<<<<<<<<<<< -->
+
+								<div class="panel-group settings-box">
+									<div class="panel panel-default">
+										<a data-toggle="collapse" data-parent="#accordion"
+											href="#collapseThree">
+											<div class="panel-heading settings-header">
+												<span class="margin-right15">Restrictions</span><span
+													class="margin-right15">-</span> <label id="lbl-pas"
+													class="display-none">No password</label> <span
+													class="downarrow-img"><img
+													src='<?php echo $this->basepath()?>/img/downarrow-small.png'></span>
+											</div> <!-- end of settings-header -->
+										</a>
+
+										<div id="collapseThree" class="panel-collapse collapse">
+											<div class="panel-body settings-content">
+
+												<div class="content">
+													<p class="head">Set a common password for all test takers</p>
+													<span>Password</span> <input type="text" class="textLarge"
+														id="topt-pas" name="password"> <br>
+													<br>
+													<span class="margin-left70">this setting is optional</span>
+
+												</div>
+												<!-- end of content1 -->
+												<p></p>
+											</div>
+										</div>
+									</div>
+									<!-- end of settingsBox -->
+								</div>
+								<!-- >>>>>>>>>END OF setting box - Restrictions<<<<<<<<<<<< -->
+
+
+								<h2 class="linkTitle">Test Introduction</h2>
+								<!-- >>>>>>>>>settings box - User info<<<<<<<<<<<< -->
+								<div class="panel-group settings-box">
+									<div class="panel panel-default">
+										<a data-toggle="collapse" data-parent="#accordion"
+											href="#collapseFour">
+
+											<div class="panel-heading settings-header">
+												<span class="margin-right15">User Info</span> <span
+													class="margin-right15">-</span><label class="display-none">Email</label>
+												<label id="lbl-fn"></label> <label id="lbl-ln"></label> <span
+													class="downarrow-img"><img
+													src='<?php echo $this->basepath()?>/img/downarrow-small.png'></span>
+											</div> <!-- end of settings-header -->
+										</a>
+
+										<div id="collapseFour" class="panel-collapse collapse">
+											<div class="panel-body settings-content">
+
+												<div class="content">
+													<span>Require</span>
+													<p>
+														<input type="checkbox" id="opt-fn" value="1"
+															class="margin-left25" name="firstName" checked>First Name
+													</p>
+													<p>
+														<input type="checkbox" id="opt-ln" value="1"
+															class="margin-left85" name="lastName" checked>Last Name
+													</p>
+													<p>
+														<input type="checkbox" checked value="1"
+															class="margin-left85" name="email" readonly="">Email
+														Address <span class="text-danger">*</span>
+													</p>
+
+												</div>
+												<!-- end of content1 -->
+											</div>
+											<!-- end of settings-content -->
+										</div>
+									</div>
+								</div>
+								<!-- end of settingsBox -->
+								<!-- >>>>>>>>>END OF setting box - User info<<<<<<<<<<<< -->
+
+								<!-- >>>>>>>>>settings box - Instructions<<<<<<<<<<<< -->
+								<div class="panel-group settings-box">
+									<div class="panel panel-default">
+										<a data-toggle="collapse" data-parent="#accordion"
+											href="#collapseFive">
+
+											<div class="panel-heading settings-header">
+												<span class="margin-right15">Instructions</span> <span
+													class="margin-right15">-</span><label class="display-none"
+													id="lbl-ins">Default</label> <span class="downarrow-img"><img
+													src='<?php echo $this->basepath()?>/img/downarrow-small.png'></span>
+											</div> <!-- end of settings-header -->
+										</a>
+
+										<div id="collapseFive" class="panel-collapse collapse">
+											<div class="settings-content" class="panel-body">
+
+												<div class="content">
+													<span>Guidelines</span>
+													<p>
+														<input type="checkbox" checked="" disabled="" value="1"
+															name="guidelines">Display guidelines before test starts
+													</p>
+													<p class="head">Default Instructions</p>
+													<hr>
+													<br> This test
+													<ul>
+														<li>should be finished in single sitting only</li>
+														<li>will not allow you to go back and make changes</li>
+														<li>has mandatory to select answer</li>
+													</ul>
+													<br>
+													<hr>
+
+													<p class="head">Custom Instructions</p>
+													<textarea id="topt-ins" name="customInstructionsId" style="resize:vertical;">
+                    </textarea>
+													<span>* using custom will replace default instructions</span>
+
+												</div>
+												<!-- end of content1 -->
+											</div>
+											<!-- end of settings-content -->
+										</div>
+									</div>
+								</div>
+								<!-- end of settingsBox -->
+								<!-- >>>>>>>>>END OF setting box - Instructions<<<<<<<<<<<< -->
+
+
+								<h2 class="linkTitle">Taking Test</h2>
+								<!-- >>>>>>>>>settings box - Time Limit<<<<<<<<<<<< -->
+								<div class="panel-group settings-box">
+									<div class="panel panel-default">
+										<a data-toggle="collapse" data-parent="#accordion"
+											href="#collapseSix">
+
+											<div class="panel-heading settings-header margin-right15">
+												Time Limit - <label id="lbl-lmt">30 </label> <label>mins</label>
+												<span class="downarrow-img"><img
+													src='<?php echo $this->basepath()?>/img/downarrow-small.png'></span>
+											</div> <!-- end of settings-header -->
+										</a>
+
+										<div id="collapseSix" class="panel-collapse collapse">
+											<div class="settings-content" class="panel-body">
+
+												<div class="content">
+													<span>Minutes</span><input type="text" value="30"
+														name="timeLimit" class="textLarge" id="topt-lmt">
+													&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+
+												</div>
+												<!-- end of content1 -->
+
+											</div>
+											<!-- end of settings-content -->
+										</div>
+									</div>
+								</div>
+								<!-- end of settingsBox -->
+								<!-- >>>>>>>>>END OF setting box - Time Limit<<<<<<<<<<<< -->
+
+								<!-- >>>>>>>>>settings box - Save Result<<<<<<<<<<<< -->
+								<div class="panel-group settings-box fontapply">
+									<div class="panel panel-default">
+										<a data-toggle="collapse" data-parent="#accordion"
+											href="#collapseSeven">
+
+											<div class="settings-header" class="panel-heading">
+												Save Result - <label class="display-none margin-right15"
+													id="lbl-sav">No</label> <span class="downarrow-img"><img
+													src='<?php echo $this->basepath()?>/img/downarrow-small.png'></span>
+											</div> <!-- end of settings-header -->
+										</a>
+
+										<div id="collapseSeven" class="panel-collapse collapse">
+											<div id="settings-content" class="panel-body">
+
+												<div class="content">
+													<span>Save</span> <input type="radio" id="opt1-sav"
+														value="1" name="saveResult"> <label for="opt1-sav">Yes</label>
+													<input type="radio" id="opt2-sav" value="0" checked=""
+														name="saveResult"> <label for="opt2-sav">No</label>
+
+												</div>
+												<!-- end of content1 -->
+
+											</div>
+											<!-- end of settings-content -->
+										</div>
+									</div>
+								</div>
+								<!-- end of settingsBox -->
+								<!-- >>>>>>>>>END OF setting box - Save Result<<<<<<<<<<<< -->
+
+								<!-- >>>>>>>>>settings box - Resume Later<<<<<<<<<<<< -->
+								<div class="panel-group settings-box fontapply">
+									<div class="panel panel-default">
+										<a data-toggle="collapse" data-parent="#accordion"
+											href="#collapseEight">
+											<div class="panel-heading settings-header">
+												<label>Resume Later -</label> <label class="display-none"
+													id="lbl-res">No</label> <span class="downarrow-img"><img
+													src='<?php echo $this->basepath()?>/img/downarrow-small.png'></span>
+											</div> <!-- end of settings-header -->
+										</a>
+
+										<div id="collapseEight" class="panel-collapse collapse">
+											<div id="settings-content" class="panel-body">
+
+												<div class="content">
+													<p>
+														<span>Resume</span> <input type="radio" id="opt1-res"
+															value="1" name="resumeLater"> <label for="opt1-res">Yes</label>
+														<input type="radio" id="opt2-res" value="0" checked=""
+															name="resumeLater"> <label for="opt2-res">No</label>
+													</p>
+												</div>
+												<!-- end of content1 -->
+
+											</div>
+											<!-- end of settings-content -->
+										</div>
+									</div>
+								</div>
+								<!-- end of settingsBox -->
+								<!-- >>>>>>>>>END OF setting box - Resume Later<<<<<<<<<<<< -->
+
+
+
+
+
+								<h2 class="linkTitle">Test Questions</h2>
+
+								<!-- >>>>>>>>>settings box - No. of Questions<<<<<<<<<<<< -->
+								<div class="panel-group settings-box">
+									<div class="panel panel-default">
+										<a data-toggle="collapse" data-parent="#accordion"
+											href="#collapseTennew">
+											<div class="settings-header" class="panel-heading">
+
+												No. of Questions - <label id="lbl-que"></label> 
+												<span class="downarrow-img">
+													<img src='<?php echo $this->basepath()?>/img/downarrow-small.png'>
+												</span>
+											</div> <!-- end of settings-header -->
+										</a>
+
+										<div id="collapseTennew" class="panel-collapse collapse">
+											<div class="settings-content" class="panel-body">
+
+												<div class="content">
+													<span>Test contains</span> &nbsp;&nbsp; <select
+														id="opt-que" name="totalQuestion">
+                        <?php for($i=1 ; $i<=$totalQue; $i++) {
+                            if($i == $totalQue) {
+                                echo '<option value="'.$i.'" selected >'.$i.'</option>';
+                            } else {
+                                echo '<option value="'.$i.'">'.$i.'</option>';
+                            }
+                        }?>
+
+                    </select>Questions
+												</div>
+												<!-- end of content1 -->
+											</div>
+											<!-- end of settings-content -->
+										</div>
+									</div>
+								</div>
+								<!-- end of settingsBox -->
+
+								<!-- >>>>>>>>>END OF setting box - No. of Questions <<<<<<<<<<<< -->
+
+								<!-- >>>>>>>>>settings box - Display<<<<<<<<<<<< -->
+								<div class="panel-group settings-box">
+									<div class="panel panel-default">
+										<a data-toggle="collapse" data-parent="#accordion"
+											href="#collapseNine">
+											<div class="panel-heading settings-header">
+												Display - <label id="lbl-dis"
+													class="display-none margin-right5">1</label><label>question
+													per page</label> <span class="downarrow-img"><img
+													src='<?php echo $this->basepath()?>/img/downarrow-small.png'></span>
+											</div> <!-- end of settings-header -->
+										</a>
+
+										<div id="collapseNine" class="panel-collapse collapse">
+											<div class="settings-content" class="panel-body">
+
+												<div class="content">
+													<span>Display</span> &nbsp;&nbsp; <select id="opt-dis"
+														name="displayQuestions">
+														<option value="1">1</option>
+														<option value="2">2</option>
+														<option value="3">3</option>
+														<option value="5">5</option>
+														<option value="10">10</option>
+													</select> questions per page
+
+												</div>
+												<!-- end of content1 -->
+											</div>
+											<!-- end of settings-content -->
+										</div>
+									</div>
+								</div>
+								<!-- end of settingsBox -->
+								<!-- >>>>>>>>>END OF setting box - Display<<<<<<<<<<<< -->
+
+
+								<!-- >>>>>>>>>settings box - Randomize<<<<<<<<<<<< -->
+								<div class="panel-group settings-box fontapply">
+									<div class="panel panel-default">
+										<a data-toggle="collapse" data-parent="#accordion"
+											href="#collapseTen">
+											<div class="settings-header" class="panel-heading">
+
+												Randomize - <label id="lbl-ran">No</label> <span
+													class="downarrow-img"><img
+													src='<?php echo $this->basepath()?>/img/downarrow-small.png'></span>
+											</div> <!-- end of settings-header -->
+										</a>
+
+										<div id="collapseTen" class="panel-collapse collapse">
+											<div id="settings-content" class="panel-body">
+
+												<div class="content">
+													<span>Give questions in Random Order</span> <input
+														type="radio" id="opt1-ran" value="1" name="randomize"> <label
+														for="opt1-ran">Yes</label> <input type="radio"
+														id="opt2-ran" value="0" checked="" name="randomize"> <label
+														for="opt2-ran">No</label>
+
+												</div>
+												<!-- end of content1 -->
+											</div>
+											<!-- end of settings-content -->
+										</div>
+									</div>
+								</div>
+								<!-- end of settingsBox -->
+								<!-- >>>>>>>>>END OF setting box - Randomize<<<<<<<<<<<< -->
+
+								<!-- >>>>>>>>>settings box - Result Page<<<<<<<<<<<< -->
+								<h2 class="linkTitle">Test Completion</h2>
+								<div class="panel-group settings-box">
+									<div class="panel panel-default">
+										<a data-toggle="collapse" data-parent="#accordion"
+											href="#collapseEleven">
+											<div class="settings-header" class="panel-heading">
+												Result Page - <label id="lbl-scr">Score only</label> <span
+													class="downarrow-img"><img
+													src='<?php echo $this->basepath()?>/img/downarrow-small.png'></span>
+											</div> <!-- end of settings-header -->
+										</a>
+										<div id="collapseEleven" class="panel-collapse collapse">
+											<div class="settings-content" class="panel-body">
+												<div class="content">
+													<p class="head">Option 1</p>
+													<span>Display</span>
+													<ol>
+														<li><input type="radio" id="opt1-scr" value="1"
+															name="displayResult"> <label for="opt1-scr">No Score,
+																question and feedback</label></li>
+														<li><input type="radio" id="opt2-scr" checked="" value="2"
+															name="displayResult"> <label for="opt2-scr">Score only</label>
+														</li>
+														<li><input type="radio" id="opt3-scr" value="3"
+															name="displayResult"> <label for="opt3-scr">Score,
+																questions and chosen answers</label></li>
+														<li><input type="radio" id="opt4-scr" value="4"
+															name="displayResult"> <label for="opt4-scr">Score,
+																questions and Highlight correct answers</label></li>
+													</ol>
+												</div>
+												<!-- end of content1 -->
+												<div class="content">
+													<p class="head">Option 2</p>
+													<span>Show Result By Categories</span> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    <?php echo $this->formRow($form->get('resultByCategory'));?>
+                </div>
+												<!--  end of content2 -->
+												<div class="content">
+													<p class="head">Option 3</p>
+													<span>Test Completion Message</span>
+													<textarea id="feedback" name="endMessage">Thank You for giving TestCube! Result will be announced soon.</textarea>
+												</div>
+												<!-- end of content3 -->
+											</div>
+											<!-- end of settings-content -->
+										</div>
+									</div>
+								</div>
+								<!-- end of settingsBox -->
+								<!-- >>>>>>>>>END OF setting box - Result Page<<<<<<<<<<<< -->
+
+								<!-- >>>>>>>>>settings box - Passing Marks<<<<<<<<<<<< -->
+								<div class="panel-group settings-box">
+									<div class="panel panel-default">
+										<a data-toggle="collapse" data-parent="#accordion"
+											href="#collapseTweleve">
+											<div class="panel-heading settings-header">
+												Passing Marks - <label id="lbl-pam" class="display-none">50</label>
+												% <span class="downarrow-img"><img
+													src='<?php echo $this->basepath()?>/img/downarrow-small.png'></span>
+											</div> <!-- end of settings-header -->
+										</a>
+										<div id="collapseTweleve" class="panel-collapse collapse">
+											<div class="settings-content" class="panel-body">
+												<div class="content">
+                    <?php echo $this->formRow($form->get('passingMarks'));?> % &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                </div>
+												<!-- end of content1 -->
+											</div>
+										</div>
+										<!-- end of settings-content -->
+									</div>
+								</div>
+								<!-- end of settingsBox -->
+								<!-- >>>>>>>>>END OF setting box - Passing Marks<<<<<<<<<<<< -->
+
+								<!-- >>>>>>>>>settings box - Email Result<<<<<<<<<<<< -->
+								<div class="panel-group settings-box">
+									<div class="panel panel-default">
+										<a data-toggle="collapse" data-parent="#accordion"
+											href="#collapseThirteen">
+											<div class="settings-header" class="panel-heading">
+												Email Result - <label id="lbl-eml">Email Score only</label>
+												<span class="downarrow-img"><img
+													src='<?php echo $this->basepath()?>/img/downarrow-small.png'></span>
+											</div> <!-- end of settings-header -->
+										</a>
+										<div id="collapseThirteen" class="panel-collapse collapse">
+											<div class="settings-content" class="panel-body">
+												<div class="content">
+													<span>Email Settings</span>
+													<ol class="list-styleNone">
+														<li><input type="radio" id="opt1-eml" value="1"
+															name="emailResult"> <label for="opt1-eml">Off</label></li>
+														<li><input type="radio" id="opt2-eml" value="2" checked=""
+															name="emailResult"> <label for="opt2-eml">Email Score
+																only</label></li>
+														<li><input type="radio" id="opt3-eml" value="3"
+															name="emailResult"> <label for="opt3-eml">Email score
+																&amp; incorrectly answered questions only</label></li>
+														<li><input type="radio" id="opt4-eml" value="4"
+															name="emailResult"> <label for="opt4-eml">Email score and
+																all answered questions</label></li>
+														<li><span>Send Emails to</span> <input type="email"
+															class="textLarge" id="resultsEmail" name="txtemailResult"></li>
+													</ol>
+												</div>
+												<!-- end of content1 -->
+											</div>
+											<!-- end of settings-content -->
+										</div>
+									</div>
+								</div>
+								<!-- end of settingsBox -->
+
+								
+
+								<!-- >>>>>>>>>END OF setting box - Email Result<<<<<<<<<<<< -->
+								<div class="buttonsPan">
+									<input id="btnGenerateLink" type="submit" name="submit"
+										class="btn" value="Create Link">
+								</div>
+							</div>
+							<!--end of panel body-->
+						</div>
+						<!-- end of collapse main-->
+					</div>
+					<!-- end of link-head-->
+<?php
+echo $this->form()->closeTag();
+?>
+</div>
+				<!-- end of row mid -->
+			</div>
+			<!-- content-->
+		</div>
+		<!-- end of content-head-->
+	</div>
+	<!-- end of main-container-->
+</div>
+<!-- end of row-mid-->
+
+<script type="text/javascript">
+
+
+
+    $(document).ready(function(){
+        $('#lbl-que').html($("#opt-que option:selected").text());
+    });
+    function addClassCurrent(element)
+    {
+        var el="#ico"+element;
+        $(el).addClass("current");
+    }
+
+    function removeClassCurrent(element)
+    {
+        var el="#ico"+element;
+        $(el).removeClass("current");
+    }
+    $('#footer').css("padding-top","30px");
+
+    // for showing selected option of settings on settings header eg. "Availability - Available"
+    //for radio options selection
+    $("input[id*='opt']").click(function(){
+        var el = $(this).attr('id');
+        var element = el.substring(5,8);
+        $('#lbl-'+element).html($('label[for='+el+']').text());
+        if ($("#opt2-atm").is(":checked")) {
+        	$("#multiAttempt").css("display","block");
+        }else{
+        	$("#multiAttempt").css("display","none");
+        }
+        if ($("#opt3-atm").is(":checked")) {
+        	$("input[name=attempts]").val(20);
+        }
+    });
+
+    $("#txtmultiAttempt").blur(function(){
+    	if($("#txtmultiAttempt").val() > 10){
+    		$("#opt2-atm").val(10);
+    	}else{
+    		$("#opt2-atm").val($("#txtmultiAttempt").val());
+    	}
+    });
+
+    //for text input entries
+    $("input[id*='topt'],textarea[id*='topt'] ").blur(function(){
+        var fill = $(this).val();
+        var el = $(this).attr('id');
+        var element = el.substring(5,8);
+        if(element == "pas") {
+            if(fill != "" ) {
+                $('#lbl-'+element).html("yes");
+            }
+            else {
+                $('#lbl-'+element).html("No Password");
+            }
+        }   else if(element == "ins") {
+            if(fill != "" ) {
+                $('#lbl-'+element).html("Custom");
+            } else {
+                $('#lbl-'+element).html("Default");
+            }
+        } else {
+            $('#lbl-'+element).html(fill);
+
+        }
+    });
+
+    //for checkbox entries
+    $('#opt-fn').on('click', function() {
+        var $this = $(this);
+        if ($this.is(':checked')) {
+            $('#lbl-fn').html(", First Name");
+        } else {
+            $('#lbl-fn').html("");
+        }
+    });
+
+    $('#opt-ln').on('click', function() {
+        var $this = $(this);
+        if ($this.is(':checked')) {
+            $('#lbl-ln').html(", Last Name");
+        } else {
+            $('#lbl-ln').html("");
+        }
+    });
+
+    //for dropdownlist
+    $('#opt-dis').click(function(){
+        $('#lbl-dis').html($("#opt-dis option:selected").text());
+    });
+
+    $('#opt-que').click(function(){
+        $('#lbl-que').html($("#opt-que option:selected").text());
+    });
+
+    $("#btnSetting").on("click",function(){
+        $("#btnGenerateLink").css("margin-bottom","40px");
+        $("#btnGenerateLink").css("margin-top","-7px");
+    });
+
+    function deleteTestLink(linkId)
+    {
+        var linkid = '#deleteTestLink'+linkId;
+        var quesCount = $(linkid).data('quescount');
+    	$.ajax({
+            type: "GET",
+            url: '/test/deleteTestLink/'+linkId, 
+            //data:,
+            dataType: 'html',
+            beforeSend: function() {
+            },
+            success: function(data) {
+                $('#myModal').html(data);
+                $('#myModal').modal('show');
+            }
+        });
+    }
+
+</script>

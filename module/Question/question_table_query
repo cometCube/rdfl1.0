@@ -1,0 +1,13 @@
+CREATE TABLE `questions` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `cat_id` int(11) DEFAULT NULL,
+  `created_by` int(11) DEFAULT NULL,
+  `created_on` datetime NOT NULL,
+  `updated_by` int(11) DEFAULT NULL,
+  `updated_on` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `description` text NOT NULL,
+  `points` tinyint(4) NOT NULL DEFAULT '0',
+  `status` tinyint(1) DEFAULT '0',
+  `type` tinyint(1) DEFAULT '0',
+  PRIMARY KEY (`id`)
+)

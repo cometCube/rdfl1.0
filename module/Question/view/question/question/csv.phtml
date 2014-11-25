@@ -1,0 +1,78 @@
+<script type="text/javascript">
+  $(function(){
+    $('input#csvsubmitbutton').click(function(){
+       
+      var file = $('input[type="file"]').val();
+      var exts = ['csv','xls'];
+      // first check if file field has any value
+      if ( file ) {
+        // split file name at dot
+        var get_ext = file.split('.');
+        // reverse name to check extension
+        get_ext = get_ext.reverse();
+        // check file type is valid as given in 'exts' array
+        if ( $.inArray ( get_ext[0].toLowerCase(), exts ) > -1 ){
+         
+          return true;
+          
+        } else {
+        	$("#csv_import_err").html("Only .csv and .xls file is allowed");
+          return false;
+        }
+      }
+      else
+      {
+    	  $("#csv_import_err").html("Please upload one csv or xls file!!");
+          return false;
+      }
+    });
+  });
+</script>
+
+<ol class="breadcrumb">
+        <li>
+          <a href="<?php echo $this->url('question', array( 'action' => 'index' ))?>">Question</a>
+        </li>
+        <li>
+          <a href="<?php echo $this->url('question', array( 'action' => 'addQuestion' ))?>">Add Question</a>
+        </li>
+        <li class="active">Import Question</li>
+    </ol>
+<div id="content"> 
+        <div class="row-mid">
+            <div id="wizard1" class="wizard">Step 1: Download the template for adding questions in file
+              <a id="file-link" href="<?php  echo $this->basePath().'/csvuploads/question.csv'  ?>">
+              <div id="file-download" ></div></a>
+              <span class="txtNotice">Note: Must Follow the template to import questions or else import will not work.</span>
+            </div> <!-- end of wizard 1 -->
+            <?php 
+    $form = $this->form;
+    $form->setAttribute ( 'action', $this->url ( 'question', array (
+        'action' => 'csvimport'
+    ) ) );
+    ?>
+         
+            <div  class="wizard">Step 2: Browse the file having questions to import
+              <?php   echo $this->form ()->openTag ( $form );
+        echo $this->formHidden ( $form->get ( 'id' ) );
+        echo $this->formElement( $form->get ( 'csv' ) );
+?>           <!--  <input type="file" name="file" class="form-control fileinpt" data-trigger="fileinput" /> -->
+             <div id = "csv_import_err"></div>
+              <span class="txtNotice">Note: Maximum file size upto 20MB.</span>
+            </div>
+           
+            <div id="wizard3" class="wizard">Step 3: Import Questions from File. 
+                <div class="fileinpt filebtn">
+                  <?php
+        echo "<div>".$this->formsubmit ( $form->get ( 'submit' )->setAttribute('value','Import Questions'))."
+            		</div>";
+        echo $this->form ()->closeTag ();
+        ?>
+             
+              <input type = "hidden" id="fileHid" />
+            </div>
+            <span class="txtNotice"> Note: Category not available in list will be created automatically.</span>
+    </div>  <!-- end of content -->
+ 
+    </div>  <!-- end of dash-right-content-->
+    </div><!-- end of dash-content -->

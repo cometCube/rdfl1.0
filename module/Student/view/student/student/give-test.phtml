@@ -1,0 +1,427 @@
+<?php
+use Zend\Session\Container;
+
+
+$quizSession = new Container('quiz');
+
+$testName ="";
+$time = "";
+$hr=0;
+$min=0;
+$sec = 0;
+$passMarks ="";
+$currQue = 0;
+$totalQue = 0;
+$totalTime = 0;
+$startDate = 0;
+$barYear = 0;
+$barMonth = 0;
+$barDay = 0;
+$barHour = 0;
+$barMin = 0;
+$barSec = 0;
+$flag = 0;
+$removeCharacter = array('\r');
+  if(isset($arrData) && !empty($arrData)) {
+  
+   /*$correct_check=explode("0",$arrData[1]['correct_options']);
+   var_dump($correct_check);
+   */
+   
+    $flag = $arrData[1]['correct_flag'];
+    $testName = $arrData[0]['testName'];
+    $time = $arrData[0]['time'];
+    $totalTime = $arrData[0]['totalTime'] ;
+    $startDate = $arrData['startDate'];
+    $resume=$arrData[0]['resume'];
+    
+    $startDate = explode(" ", $startDate);
+   
+    $startDate[0] = explode("-", $startDate[0]);
+    $startDate[1] = explode(":", $startDate[1]);
+
+
+    $barYear = $startDate[0][0];
+    $barMonth =  $startDate[0][1];
+    $barDay =  $startDate[0][2];
+    
+    $barHour =  $startDate[1][0];
+    $barMin =  $startDate[1][1];
+    $barSec =  $startDate[1][2];
+    
+    if($time<=0) {
+      $time =0;
+     // header('location: ')
+    }
+    $sec = $time;
+    if($sec>60) {
+      $min= intval($sec/60);
+      $sec = $sec%60;
+    }
+    if($min>60) {
+      $hr = intval($min/60);
+      $min = $min%60;
+    }
+    
+    $passMarks = $arrData[0]['passMarks'];
+    $totalQue = $arrData[0]['queTotal'];
+ }
+
+    $selectedOptionId=array();
+    $questionDescription = $arrData[1]['description'];
+    $optionsId = explode(',', $arrData[1]['options_id']);
+    $options = explode('\',\'', $arrData[1]['options']);
+    $optCount = count($options);
+    $options[0] = ltrim($options[0],'\'');
+    if(!$options[$optCount-1][strlen($options[$optCount-1])-1] == '\''){
+      $options[$optCount-1] = rtrim($options[$optCount-1],'\'');
+    }else{ $options[$optCount-1][strlen($options[$optCount-1])-1] = "";}
+
+    $currentQuesNum = $arrData[2];
+    $optionsCount = count($options);
+    $flagForNextButton = $arrData[3];
+    
+    
+    foreach ($arrData[4] as $val) {
+
+      foreach ($val as $value) {
+        $selectedOptionId[]=$value;
+        # code...
+      }
+      
+      //$check_selected_id[]=$arrData[4][$val];
+      //\Zend\Debug\Debug::dump($check_selected_id);
+    }
+
+    if($selectedOptionId == null) {
+
+          $selectedOptionId[] = 0;
+    }
+  
+    
+   // $selectedOptionId = @$arrData[4][0]['selected_option_id']; 
+
+    
+?>
+  <div id="content">
+
+    <div id="main-container">
+       <div class="row-mid margin0auto">
+       <div id="countdowntimer" style="float:right; margin-bottom:10px;"><span id="ms_timer"><span></div> 
+       <div id="progressTimer" class="float-right" style="clear:both"></div>   
+
+       <h2><span class="black">Test:</span> <?php echo $testName;?></h2>
+      <fieldset class="testbox"><legend class="float-left"><div id="currQue" class="circleQuestionDiv circle-color"><?php echo $currentQuesNum; ?> </div></legend><legend class="float-left margin-top50neg fontapply"><p id="questiondivOf">&emsp;of&emsp;</p></legend><legend class="float-left"><div id="totalQue" class="circleQuestionDiv"><?php echo $totalQue; ?></div></legend>
+        <div id="testbox-content">
+              <div id="testbox-quesiton"><?php echo htmlspecialchars($questionDescription, ENT_QUOTES); ?><span class="smallquesdesc"><?php if($flag>1){ echo " <br>(Please select $flag options)";} ?></span></div> <!-- end of question-->
+              <div id="testbox-answers">
+                      <?php 
+                      for($i=0; $i<$optionsCount; $i++) {
+                        if($flag>1)
+                        {
+                          ?>
+                          <input type="checkbox" name="ans[]" value="<?php echo $optionsId[$i]?>" <?php 
+                              foreach ($selectedOptionId as $key => $value) {
+                                     echo $optionsId[$i]===$value?'checked':'';
+                               }?>><?php echo str_replace($removeCharacter, "", htmlspecialchars(stripslashes($options[$i]),ENT_QUOTES, 'UTF-8'));?><br>
+                        <?php  
+                        }
+                        else
+                        {
+                        ?>
+                        
+                  
+                      <input type="radio" name="ans" value="<?php echo $optionsId[$i]?>" <?php 
+                        foreach ($selectedOptionId as $key => $value) {
+
+                        echo $optionsId[$i]===$value?'checked':''; }?>><?php echo str_replace($removeCharacter, "", htmlspecialchars(stripslashes($options[$i]),ENT_QUOTES, 'UTF-8'));?><br>
+                      
+                      <?php
+                      }
+                      }
+                      ?>
+                        
+                </div> <!-- end of answers-->
+        <p></p>
+        </div> <!--end of textbox-content -->
+            
+      </fieldset> <!-- end of fieldset -->
+        <div id="testbox-bottom">
+           <input type="button" id="btnSave" value="Save">
+
+           <?php
+                if($currentQuesNum-1 !== 0) {
+            ?>
+              <a href="/student/giveTest/<?php echo($encryptobj->mntencodeAlgo($currentQuesNum-2));?>"><div id="testbox-back-btn"><span class="glyphicon glyphicon-chevron-left margin-right15"></span>Back</div></a>
+           <?php 
+              } else {
+
+              } ?>
+
+               <?php
+                if($flagForNextButton===0) {
+            ?>
+                  <div id="testbox-next-btn" value="<?php echo $flagForNextButton ?>">Next<span class="glyphicon glyphicon-chevron-right margin-left15"></div></a>          
+           <?php 
+              } elseif($flagForNextButton===1) { ?>
+
+                  <div id="testbox-next-btn" value="<?php echo $flagForNextButton ?>">Finish<span class="glyphicon glyphicon-chevron-right margin-left15"></div></a>          
+             <?php     
+
+              } ?>
+<div id="studentError" class="alert alert-info ">Please Select 1 Option</div>
+
+        </div> <!-- end of testbox-bottom-->
+      </div> <!-- end of row-midlarge -->
+   </div> <!-- end of main container -->
+  </div> <!-- end of content -->
+   
+ <script type="text/javascript">
+$(function(){
+ /* var resume='<?php echo $resume;?>';
+    alert(resume);
+    window.location.href = "/student/resultProcess";*/
+ $("#ms_timer").countdowntimer({ hours: <?php if($hr<10) { echo '0'.$hr; } else { echo $hr; }?>, minutes : <?php if($min<10) { echo '0'.$min; } else { echo $min; }?>, seconds : <?php if($sec<10) { echo '0'.$sec; } else { echo $sec; }?>});
+
+});
+</script>
+
+
+
+<script type="text/javascript">
+$.fn.progressTimer = function (options) {
+    var settings = $.extend({}, $.fn.progressTimer.defaults, options);
+        this.each(function () {
+            $(this).empty();
+            var barContainer = $("<div>").addClass("progress-new active progress-striped");
+            var bar = $("<div>").addClass("progress-bar").addClass(settings.baseStyle)
+                .attr("role", "progressbar")
+                .attr("aria-valuenow", "10")
+                .attr("aria-valuemin", "10")
+                .attr("aria-valuemax", settings.timeLimit);
+
+            bar.appendTo(barContainer);
+            barContainer.appendTo($(this));
+            
+            var start = new Date(<?php echo "$barYear,$barMonth-1,$barDay,$barHour,$barMin,$barSec,0" ?>);
+            var limit = settings.timeLimit * 1000;
+            var interval = window.setInterval(function () {
+                var elapsed = new Date()- start;
+               
+                bar.width(((elapsed / limit) * 100) + "%");
+//alert(start);
+                if (limit - elapsed <= 5000)
+                    bar.removeClass(settings.baseStyle)
+                       .removeClass(settings.completeStyle)
+                       .addClass(settings.warningStyle);
+
+                if (elapsed >= limit) {
+                    window.clearInterval(interval);
+
+                    bar.removeClass(settings.baseStyle)
+                       .removeClass(settings.warningStyle)
+                       .addClass(settings.completeStyle);
+
+                    settings.onFinish.call(this);
+                }
+
+            }, 250);
+
+        });
+
+        return this;
+};
+
+    $.fn.progressTimer.defaults = {
+        timeLimit: 0,  //total number of seconds
+        warningThreshold: 5,  //seconds remaining triggering switch to warning color
+        onFinish: function (){
+
+                alert("Time is Up");
+
+                //$('#testbox-next-btn').html("Finish").val(1);
+
+                window.location.href = "/student/resultProcess";
+
+
+        },  //invoked once the timer expires
+    baseStyle: '',  //bootstrap progress bar style at the beginning of the timer
+        warningStyle: 'progress-bar-danger',  //bootstrap progress bar style in the warning phase
+        completeStyle: 'progress-bar-success'  //bootstrap progress bar style at completion of timer
+    };
+
+        $(document).ready(function(){
+
+
+
+          $("#progressTimer").progressTimer({
+          timeLimit: "<?php echo $totalTime;?>"
+        });
+          
+          $("#testbox-next-btn").prop("disabled",true).off('click').css("background-color","#787878");
+
+          var selectedOptionId = <?php echo $selectedOptionId[0]; ?>;
+
+         
+          if(selectedOptionId!=0) {
+
+              $('input[name=ans]').attr('disabled', 'disabled');
+              $('input[type=checkbox]').attr('disabled', 'disabled');
+
+               $('#btnSave').attr('value', 'Saved').attr("disabled","").css("background-color","#CD3700");
+
+                $("#testbox-next-btn").prop("disabled",false).on('click',next).removeAttr('style');
+
+          }
+
+      });
+
+          $('#testbox-next-btn').mousedown(function( event ) {
+            if($(this).attr("style") == "background-color: rgb(120, 120, 120);"){
+              $('#studentError').html('Please save option(s) first');
+              $('#studentError').css("display","block").delay(3000).fadeOut("slow");
+            }
+          });
+
+        function next() {
+
+            var flag = $(this).attr('value');
+
+            if(flag==0) {
+
+                  window.location.href = "/student/giveTest/<?php echo($encryptobj->mntencodeAlgo($currentQuesNum));?>";     
+            
+            } else if(flag == 1) {
+
+                  $("#testbox-next-btn").html('Finish');
+
+                  window.location.href = "/student/resultProcess";
+
+            }
+           
+        }
+
+        
+   
+        $('#btnSave').click(function() {
+          
+          var optionId = [];
+          var a=$('input[name=ans]:radio:checked').val();
+
+          if(a)
+          {
+            optionId.push($('input[name=ans]:radio:checked').val());
+          }
+          else
+          {
+            
+             $("input[type=checkbox]:checked").each ( function() {
+               optionId.push($(this).val()); 
+              });
+          }
+          
+          var flag = <?php echo $flag; ?>;
+
+         if(optionId.length ==0 || optionId.length != flag )
+          {
+            $('#studentError').html('Please check '+<?php echo $flag; ?>+' option<?php if($flag > 1) echo "s"; ?>');
+            $('#studentError').css("display","block").delay(3000).fadeOut("slow");
+              /*alert();*/
+          }
+          else {
+
+            $.ajax({
+
+              type:"POST",
+              url : "/student/addSelectedOption",
+              data : {option_Id : optionId},
+
+              success:function(data) {
+                    if(data==1) {
+
+                       $('#btnSave').attr('value', 'Saved').attr("disabled","").css("background-color","#CD3700");
+                      
+                       $("#testbox-next-btn").prop("disabled",false).on('click',next).removeAttr('style');
+
+                    }
+
+                } 
+                
+            });
+
+         }   
+
+    });
+     
+      window.onload = function () {
+        document.onkeydown = function (e) {
+            return (e.which || e.keyCode) != 116;
+        };
+    }
+$("a[class='studentName']").html('<?php 
+      if(isset($quizSession->testDetails[1]['fname']))
+    echo $quizSession->testDetails[1]['fname']." ". $quizSession->testDetails[1]['lname'];
+    else
+    echo "Preview"; ?>');
+
+
+</script>
+
+
+<script type="text/javascript">
+
+$(document).ready(function(){
+  (function worker() {
+    
+    $.ajax({
+        //async: true,
+        type:"POST",
+        url: "/student/elapsedTimeEntry",
+        //dataType: '',
+        //cache: false,
+        //timeout: 5000,
+
+        success: function(data) {
+          if(data==1) {
+            
+          }
+            
+        },
+
+        error: function(data) {
+           
+            
+        }
+    });
+    setTimeout(worker, 5000);
+    })();
+
+});
+</script>
+<script type="text/javascript">
+/*window.onbeforeunload  = saveBeforeExit;
+
+ function saveBeforeExit() {  
+
+      $.ajax({
+
+              type:"POST",
+              url : "/student/closeWindow",
+             
+
+              success:function(data) {
+                    if(data==1) {
+
+                       return "true";
+                      
+                       
+
+                    }
+
+                } 
+                
+            });
+
+       return "Do you really want to close?";
+   };*/
+</script>

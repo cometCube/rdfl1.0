@@ -1,0 +1,28 @@
+<div class="modal-dialog">
+   <div class="modal-content">
+     <div class="modal-header">
+       <button type="button" class="close" data-dismiss="modal" aria-hidden=
+"true">&times;</button>
+       <h5 class="modal-title" id="myModalLabel"><strong><bold>Delete Question</bold></strong></h5>
+     </div>
+     <div class="modal-body">
+<p><strong>Are you sure that you want to delete?</strong>
+
+</p>
+<?php
+$url = $this->url('question', array(
+   'action' => 'deleteMultipleQuestion',
+   'id'     => $this->id,
+));
+?>
+<form action="<?php echo $url; ?>" method="post">
+   <div>
+       <input type="hidden" name="id" value="<?php echo (int) $question->id; ?>" />
+       <input type="submit" name="del" value="Yes" />
+       <input type="submit" name="del" value="No" />
+   </div>
+</form>
+</div>
+</div>
+   
+</div>

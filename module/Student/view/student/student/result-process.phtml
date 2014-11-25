@@ -1,0 +1,149 @@
+<?php
+use Zend\Session\Container;
+$quizSession = new Container('quiz');
+$testName = "Preview";
+$time = "20 Minutes";
+$passMarks ="50";
+$score = "Preview";
+$percentage = "Preview";
+$totalQuestion = "0";
+$duration = "Preview";
+$date_started = "Preview";
+$date_finished = "Preview";
+$name="Student";
+
+
+$currentTime = (array)new \DateTime(date('Y-m-d H:i:s'));
+
+if(isset($arrData) && !empty($arrData)) {
+  
+//\Zend\Debug\Debug::dump($arrData);
+   $testName = $quizSession->testNaam;
+
+   $totalQuestion = $arrData[0]['totalscore'];
+
+   $score = $arrData[0]['score']; 
+
+   $percentage = $arrData[0]['percentage'];
+
+    $date_started =  $arrData[0]['date_started'];
+
+    $date_finished =$arrData[0]['date_finished'];
+
+    $time =$arrData[0]['duration'];
+    $hr='00';
+    $min='00';
+    $sec = '00';
+    if($time<=0) {
+      $time =0;
+     // header('location: ')
+    }
+    $sec = $time;
+    if($sec>=60) {
+      $min= intval($sec/60);
+      $sec = $sec%60;
+    }
+    if($min>=60) {
+      $hr = intval($min/60);
+      $min = $min%60;
+    }
+    if(strlen($sec) < 2){
+      $sec = "0".$sec;
+    }
+    
+   // $duration = $hr.":".$min.":".$sec ;
+   // $duration=$quizSession->elapsed;
+
+    $name=$quizSession->testDetails[1]['fname']." ".$quizSession->testDetails[1]['lname'];
+
+}
+
+
+
+?>
+
+<div id="content">
+
+
+
+   <div id="main-container">
+
+      
+
+  <fieldset class="fieldbox"><legend class="legendtext">Result for <?php echo $name;?> </legend>
+       <table id="resTable"cellpadding="10" class="fontapply">
+
+              <tr>
+
+               <td width="250px">Title</td>
+
+               <td><?php echo $testName?></td>
+               </tr>
+
+               <tr>
+
+               <td width="250px">Points</td>
+
+               <td><?php 
+                    if($score=='Preview')
+                    {
+                        echo $score;
+                        
+                    }
+                    else
+                        echo 'You have Scored '.$score."/".$totalQuestion?>
+                </td>
+
+               </tr>
+
+                <tr>
+
+               <td width="250px">percentage</td>
+
+               <td><?php if($percentage=='Preview')
+                        {
+                        echo $percentage;
+                        
+                        }
+                        else
+                          echo $percentage."%";
+                          ?>
+                </td>
+
+                </tr>
+               <tr>
+                <td width="250px">Duration</td>
+                <td> <?php if(isset($arrData)){ if($hr<10 && $hr!='0') { echo '0'.$hr; } else { echo $hr; }?> : <?php if($min<10 && $min !='0') { echo '0'.$min; } else { echo $min; }?>: <?php if($sec<10 && $sec!='0') { echo '0'.$sec; } else { echo $sec; }}
+                else
+                  {
+                    echo $duration;
+                  }?></td>
+               </tr>
+ 
+                <tr>
+                <td width="250px">Date Started</td>
+                <td><?php echo $date_started; ?></td>
+                </tr>
+                <tr>
+                <td width="250px">Date Finished</td>
+                <td><?php echo $date_finished; ?></td>
+                </tr>
+                </table>
+        <br>
+        <a href="javascript:window.close();" class="btn fontapply float-right">Exit</a>
+     </fieldset> <!-- end of fieldset -->
+
+ </div> <!-- end of main container -->
+ </div> <!-- end of content -->
+</div> <!-- end of wrapper -->
+
+</body>
+</html>
+<script type="text/javascript">
+$("a[class='studentName']").html('<?php 
+      if(isset($quizSession->testDetails[1]['fname']))
+    echo $quizSession->testDetails[1]['fname']." ". $quizSession->testDetails[1]['lname'];
+    else
+    echo "Preview"; ?>');
+</script>
+

@@ -1,0 +1,46 @@
+;questiondescription;category;option1;option2;option3;option4;option5;option6;option7;option8;correct;points;type;status
+;What PHP stands for;PHPc++;Pre Hypertext Processor;Pre Hyper Processor;Pre Hypertext Process;Hypertext Preprocessor;;;;;Pre Hypertext Process;4;1;0
+;How does the identity operator === compare two values?;PHP;It converts them to a common compatible data type and then compares the resulting values;It returns True only if they are both of the same type and value;If the two values are strings; it performs a lexical comparison;It bases its comparison on the C strcmp function exclusively;;;;It returns True only if they are both of the same type and value;4;1;0
+;Variables always start with a ........ in PHP;PHP;Pond-sign;Yen-sign;Dollar-sign;Euro-sign;;;;;Dollar-sign;4;1;0
+;Which of the following is not valid PHP code?;PHP;$_10;${“MyVar”};&$something;$10_somethings;;;;;$10_somethings;4;1;0
+;What function computes the difference of arrays?;PHP;array_diff;diff_array ;arrays_diff;diff_arrays;;;;;array_diff;4;1;0
+;What functions count elements in an array?;PHP;count;length;Array_Count;Count_array;;;;;count;4;1;0
+;Which of the following DBMSs do not have a native PHP extension?;MYSQL;MySQL;IBM DB/2;PostgreSQL;Microsoft SQL Server;;;;;Microsoft SQL Server;4;1;0
+;In PHP in order to access MySQL database you will use:;MYSQL;mysqlconnect() function;mysql-connect() function;mysql_connect() function;sql_connect() function;;;;;mysql_connect() function;4;1;0
+;Which statement is used to delete a table.;MYSQL;DROP TABLE;DELETE TABLE;DEL TABLE;REMOVE TABLE;;;;;DROP TABLE;4;1;0
+;join can not be nested?;MYSQL;TRUE;FALSE;;;;;;;FALSE;2;0;0
+;Which of the following is not an SQL aggregate function?;MYSQL;AVG;SUM;MIN;MAX;;;;;MAX;4;1;0
+;What is use to delete the data inside the table;MYSQL;TRUNCATE TABLE;DROP TABLE;DELETE TABLE;TRUNCATE TABLE;REMOVE TABLE;;;;TRUNCATE TABLE;4;1;0
+;Why so JavaScript and Java have similar name?;JavaScript;JavaScript is a stripped-down version of Java;JavaScript's syntax is loosely based on Java's;They both originated on the island of Java;None of the above;;;;;JavaScript's syntax is loosely based on Java's;4;1;0
+;When a user views a page containing a JavaScript program;JavaScript;JavaScript;The User's machine running a Web browser;The Web server;A central machine deep within Netscape's corporate offices;None of the above;;;;The User's machine running a Web browser;4;1;0
+;JavaScript is also called client-side JavaScript.;JavaScript;Microsoft;Navigator;LiveWire;Native;;;;;Navigator;4;1;0
+;Which of the following can't be done with client-side JavaScript?;JavaScript;Validating a form;Sending a form's contents by email;toring the form's contents to a database file on the server;None of the above;;;;;toring the form's contents to a database file on the server;4;1;0
+;Which of the following is not a valid JavaScript variable name?;JavaScript;2names;_first_and_last_names;FirstAndLast;none of the above;;;;;2names;4;1;0
+;Javascript is invented by-;JavaScript;James Goseling;Brendan Eich;W3 Group;None of the above;;;;;Brendan Eich;4;1;0
+;Which of the following function sets first n characters of a string to a given character?;Cc++;strinit();strnset();  Strset();  Strcset();;;;;strnset();5;1;0
+;If the two strings are identical  then strcmp() function returns;C;1;-1;2;0;Yes;;;;0;5;1;0
+;The library function used to find the last occurrence of a character in a string is;C;strnstr();laststr();strrchr();  Strstr();;;;;Strrchr();5;1;0
+;Which of the following function is used to find the first occurrence of a given string in another string?;C;strchr();strrchr();strstr();strnset();;;;;strstr();5;1;0
+;What allows the programmer to destroy an object x?;Java;x.delete();x.finalize();Runtime.getRuntime().gc();Only the garbage collection system can destroy an object.;;;;;Only the garbage collection system can destroy an object.;5;1;0
+;String in Java is a?;Java;class;object;variable; character array;;;;;class;5;1;0
+; Which of these method of String class is used to obtain character at specified index?;Java;char(); Charat();charat();charAt();;;;; charAt();5;1;0
+; Which of these keywords is used to refer to member of base class from a sub class?;Java;upper;super;this;None of the above;;;;;super;5;1;0
+; Which of these method of String class can be used to test to strings for equality?;Java; isequal(); isequals();equal(); equals();;;;; equals();5;1;0
+;Which of the following statements are incorrect?;Java;String is a class.;Strings in java are mutable; Every string is an object of class String;Java defines a peer class of String  called StringBuffer  which allows string to be altered;;;;; Strings in java are mutable;5;1;0
+;Java is an enhanced version of C++;Java;TRUE;FALSE;;;;;;;FALSE;5;0;0
+;JVM stands for;Java;Java Verified Machine;Java Virtual Machine;Java Very large Machine;Java Very small Machine;;;;;Java Virtual Machine;5;1;0
+;JRE stands for;Java11111;Java Real Environment;Java Rapid Enterprise;Java Runtime Environment;None of the above;;;;;Java Runtime Environment;5;1;0
+;What is the command to execute a java program? (Let the file name be myprogram.java);Java;java myprogram.java;javac myprogram;java myprogram.class;java myprogram;;;;;java myprogram;5;1;0
+;Garbage collection takes place automatically in JVM;Java;TRUE;FALSE;;;;;;;TRUE;2;0;0
+;JVM is platform independent;Java;TRUE;FALSE;;;;;;;FALSE;2;0;0
+;JAR stands for?;Java;Java Archive;Java Archive Runner;Java Application Runner;None of the above;;;;;Java Archive;5;1;0
+;Java is a strongly typed language.;Java;TRUE;FALSE;;;;;;;TRUE;2;0;0
+;Keywords and Identifiers are same;Java33;TRUE;FALSE;;;;;;;FALSE;2;0;0
+;What is the default data type of a decimal number in Java?;Java;int;float;double;long;;;;;double;5;1;0
+;How can we create an unsigned int variable in Java?;Java5555;Can not be created;unsigned int i;int i=(unsigned int) 10;int unsigned i;;;;;Can not be created;5;1;0
+; What is the size of wchar_t in C++?;C++;2;4;2 or 4;based on the number of bits in the system;;;;; based on the number of bits in the system;5;1;0
+;Pick the odd one out;C++;array type; character type; boolean type;integer type;;;;;array type;5;1;0
+; Which datatype is used to represent the absence of parameters?;C++;int;short;void;float;;;;;void;5;1;0
+;What does a escape code represent?;C++;alert;backslash;tab;form feed;;;;;alert;5;1;0
+;Which type is best suited to represent the logical values?;C++;integer;boolean;character;all of the mentioned;;;;;boolean;8;1;0
+;When a language has the capability to produce new data type mean;G++;it can be called as;overloaded;extensible;encapsulated;reprehensible;;;;extensible;7;1;0

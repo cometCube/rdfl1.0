@@ -1,0 +1,116 @@
+<?php
+$form->setAttribute('action', $this->url('user', array('action' => 'addUser')));
+$form->prepare();
+
+echo $this->formHidden($form->get('id'));
+//echo $this->formRow($form->get('username'));
+echo "<span>Username</span>".'<br/>';
+echo $this->formElement($form->get('username'));?>
+<span class="formInfo"><a id="one" class="jTip" href="#" data-container="body" title="Username must follow these rules:"  
+data-content="<ol><li>Username must be of atleast 5 characters</li>
+                   <li>Username must be of maximum 20 characters</li>
+                   <li>Username can contain only underscore(_) as special character</li>
+                   <li>Username cannot be the same as the email</li></ol>">?</a></span>
+           <?php
+echo '<span class="err" id="errRegUserName"></span>'.'<p></p>';
+
+echo "<span>Firstname</span>".'<br/>';
+echo $this->formElement($form->get('firstname')); ?>
+<span class="formInfo"><a id="three" class="jTip" href="#" data-container="body" 
+              title="Name must follow these rules" 
+              data-content="
+                  <ol>
+                    <li>Name must contain at least one character</li>
+                  <li>Maximum length of name is upto 20 characters</li>
+                  <li>Name cannot contain any special characters(@, %,_ etc)</li>
+                  <li>Name cannot contain any special characters(@, %,_ etc)</li>
+                </ol>" >?</a></span>
+
+                <?php
+echo '<span class="err" id="errRegFirstname"></span>'.'<p></p>';
+
+echo "<span>Lastname</span>".'<br/>';
+echo $this->formElement($form->get('lastname')); ?>
+<span class="formInfo"><a id="three" class="jTip" href="#" data-container="body" 
+              title="Name must follow these rules" 
+              data-content="
+                  <ol>
+                    <li>Name must contain at least one character</li>
+                  <li>Maximum length of name is upto 20 characters</li>
+                  <li>Name cannot contain any special characters(@, %,_ etc)</li>
+                  <li>Name cannot contain any special characters(@, %,_ etc)</li>
+                </ol>" >?</a></span>
+                <?php
+echo '<span class="err" id="errRegLastname"></span>'.'<p></p>';
+
+
+
+
+
+echo "<span>Email</span>".'<br/>';
+echo $this->formElement($form->get('email')); ?>
+<span class="formInfo"><a id="two" class="jTip" href="#" data-container="body" title="Email must follow these rules:"
+                  data-content="<ol><li>Email cannot be left blank</li>
+                    <li>Maximum length can be upto 150 characters</li>
+                                  </ol>" >?</a></span>
+                                  <?php
+echo '<span class="err" id="errEmail"></span>'.'<p></p>';
+echo "<span>Password</span><br/>";
+echo $this->formElement($form->get('password')); ?>
+<span class="formInfo"><a id="two" class="jTip" href="#" data-container="body" title="Password must follow these rules:"
+                  data-content="<ol><li>Password cannot be left blank</li>
+                    <li>Maximum length can be upto 150 characters</li>
+                                  </ol>" >?</a></span>
+                                  <?php
+echo '<span class="err" id="errPass"></span>'.'<p></p>';
+echo "<span>Confirm Password</span><br/>";
+echo $this->formElement($form->get('confirmpassword'));
+echo '<span class="err" id="errconfirmPass"></span>'.'<p></p>';
+?>
+
+
+ <?php
+ echo $this->formSubmit($form->get('submit'));
+ ?>
+
+
+<button type="reset" value="Reset" class = "btn float-left" id = "resetbtn" >Reset</button>
+<br>
+<br>
+<script>
+$(".jTip").popover({
+        placement: "right",
+        html: true,
+        trigger: "hover",
+        delay: {
+            show: "300",
+            hide: "100"
+        }
+    });
+
+$(document).ready(function(){
+  $("#txtRegUsername").on("keypress", function(e) {
+  if (e.which === 32 && !this.value.length)
+      e.preventDefault();
+  });
+
+  $("#txtRegFirstname").on("keypress", function(e) {
+  if (e.which === 32 && !this.value.length)
+      e.preventDefault();
+  });
+
+  $("#txtRegLastname").on("keypress", function(e) {
+  if (e.which === 32 && !this.value.length)
+      e.preventDefault();
+  });
+
+  $("#txtEmail").on("keypress", function(e) {
+    if (e.which === 32 && !this.value.length)
+        e.preventDefault();
+    });
+
+
+});
+
+</script>
+
